@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@layer base {
+    h2 {
+        @apply text-2xl font-bold text-slate-800 mb-4;
+    }
+    p {
+        @apply text-mauve-500;
+    }
+}

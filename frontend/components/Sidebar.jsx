@@ -18,8 +18,8 @@ const Sidebar = () => {
 
             <nav className="flex-1 p-4 space-y-2">
                 <NavLink to="/" className={navLinkClass}>Dashboard</NavLink>
-                <NavLink to="/clients" className={navLinkClass}>Accounts</NavLink>
-                <NavLink to="/accounts" className={navLinkClass}>Clients</NavLink>
+                <NavLink to="/clients" className={navLinkClass}>Clients</NavLink>
+                <NavLink to="/accounts" className={navLinkClass}>Accounts</NavLink>
                 <NavLink to="/transactions" className={navLinkClass}>Transactions</NavLink>
             </nav>
         </aside>

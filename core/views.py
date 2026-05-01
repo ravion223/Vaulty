@@ -6,12 +6,14 @@ from .serializers import ClientSerializer, AccountSerializer, TransactionSeriali
 # Create your views here.
 
 class ClientViewSet(viewsets.ModelViewSet):
+    # avoiding n+1 query problem
     queryset = Client.objects.prefetch_related('accounts').all()
     serializer_class = ClientSerializer
     
 
 class AccountViewSet(viewsets.ModelViewSet):
-    queryset = Account.objects.all()
+    # avoiding n+1 query problem
+    queryset = Account.objects.select_related('client').all()
     serializer_class = AccountSerializer
 
 

@@ -5,10 +5,10 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 import MainLayout from "../layots/MainLayout"
-import Clients from "../pages/Clients"
-import Accounts from "../pages/Accounts"
-import Dashboard from "../pages/Dashboard"
-import Transactions from "../pages/Transactions"
+import Clients from "./pages/Clients"
+import Accounts from "./pages/Accounts"
+import Dashboard from "./pages/Dashboard"
+import Transactions from "./pages/Transactions"
 
 function App() {
   return (

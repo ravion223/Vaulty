@@ -14,4 +14,20 @@ apiClient.interceptors.request.use((config) => {
     return config;
 })
 
+// unauthorized error handler for future authorization
+apiClient.interceptors.response.use(
+    (response) => {
+        return response
+    },
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            console.warn("Token is not valid. Redirecting to login page...");
+            localStorage.removeItem('access_token');
+            // /login in future
+            window.location.href = '/';
+        }
+        return Promise.reject(error);
+    }
+)
+
 export default apiClient;

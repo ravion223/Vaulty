@@ -7,11 +7,19 @@ const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const[page, setPage] = useState(1);
+    const[hasNext, setHasNext] = useState(false);
+    const[hasPrevious, setHasPrevious] = useState(false);
+
     useEffect(() => {
         const fetchTransactions = async () => {
+            setLoading(true);
             try{
                 const response = await apiClient.get("transactions/");
                 setTransactions(response.data.results);
+
+                setHasNext(response.data.next !== null)
+                setHasPrevious(response.data.previous !== null)
             } catch (error) {
                 console.log("Loading error", error);
             } finally {
@@ -19,7 +27,7 @@ const Transactions = () => {
             }
         }
         fetchTransactions() 
-    }, []);
+    }, [page]);
 
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
@@ -84,6 +92,27 @@ const Transactions = () => {
                             ))}
                         </tbody>
                     </table>
+                    {!loading && (
+                        <div className="flex items-center justify-between border-t border-mauve-200 mt-4 pt-4">
+                            <button
+                                onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                                disable={!hasPrevious}
+                                className="px-4 py-2 text-sm font-medium text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-200 disabled:opacity-50 disabled:cursor-not-allowed transition duration-500"
+                            >
+                                Previous
+                            </button>
+                            <span className="text-sm text-mauve-500 font-medium">
+                                Page {page}
+                            </span>
+                            <button
+                                onClick={() => setPage((prev) => prev + 1)}
+                                disable={!hasNext}
+                                className="px-4 py-2 text-sm font-medium text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-200 disabled:opacity-50 disabled:cursor-not-allowed transition duration-500"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

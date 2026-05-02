@@ -1,19 +1,47 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { FiUsers, FiDollarSign, FiActivity, FiAlertTriangle } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import apiClient from "../api/client";
 
-const chartData = [
-    { name: 'Mon', balance: 4000 },
-    { name: 'Tue', balance: 3000 },
-    { name: 'Wed', balance: 5000 },
-    { name: 'Thu', balance: 2780 },
-    { name: 'Fri', balance: 8890 },
-    { name: 'Sat', balance: 2390 },
-    { name: 'Sun', balance: 3490 },
-];
+// const chartData = [
+//     { name: 'Mon', balance: 4000 },
+//     { name: 'Tue', balance: 3000 },
+//     { name: 'Wed', balance: 5000 },
+//     { name: 'Thu', balance: 2780 },
+//     { name: 'Fri', balance: 8890 },
+//     { name: 'Sat', balance: 2390 },
+//     { name: 'Sun', balance: 3490 },
+// ];
 
 const Dashboard = () => {
+    const [stats, setStats] = useState({
+        total_balance: 0,
+        active_clients: 0,
+        transactions_24h: 0,
+        flagged_transactions: 0,
+        chart_data: []
+    })
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await apiClient.get("dashboard-stats/");
+                setStats(response.data);
+            } catch (error) {
+                console.log("Error loading stats:", error)
+            } finally {
+                setLoading(false)
+            }
+        };
+        fetchStats()
+    }, []);
+
     return (
-    <div className="space-y-6">
+      loading ? (
+        <div className="text-mauve-500 p-6">Loading Dashboard...</div>
+      ) :
+    (<div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-mauve-900">Dashboard view</h2>
         <p className="text-mauve-500 text-sm">Key indicators of VaultCore for this week.</p>
@@ -27,7 +55,7 @@ const Dashboard = () => {
           </div>
           <div>
             <p className="text-sm font-medium text-mauve-500">Total balance</p>
-            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">$1,245,890</h3>
+            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">{stats.total_balance}</h3>
           </div>
         </div>
 
@@ -37,7 +65,7 @@ const Dashboard = () => {
           </div>
           <div>
             <p className="text-sm font-medium text-mauve-500">Active clients</p>
-            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">1,024</h3>
+            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">{stats.active_clients}</h3>
           </div>
         </div>
 
@@ -47,7 +75,7 @@ const Dashboard = () => {
           </div>
           <div>
             <p className="text-sm font-medium text-mauve-500">Transactions in 24h</p>
-            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">842</h3>
+            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">{stats.transactions_24h}</h3>
           </div>
         </div>
 
@@ -57,7 +85,7 @@ const Dashboard = () => {
           </div>
           <div>
             <p className="text-sm font-medium text-mauve-500">Attention needed</p>
-            <h3 className="text-2xl font-bold text-red-600 tabular-nums">12</h3>
+            <h3 className="text-2xl font-bold text-red-600 tabular-nums">{stats.flagged_transactions}</h3>
           </div>
         </div>
       </div>
@@ -69,7 +97,7 @@ const Dashboard = () => {
         {/* used ResponsiveContainer to get good sized graph on any resolution, cool thing */}
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <AreaChart data={stats.chart_data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
@@ -87,7 +115,7 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
       </div>
-    </div>
+    </div>)
     )
 }
 

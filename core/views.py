@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Sum
@@ -13,6 +13,9 @@ from .serializers import ClientSerializer, AccountSerializer, TransactionSeriali
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.prefetch_related('accounts').all()
     serializer_class = ClientSerializer
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
 
     def get_queryset(self):
         queryset = super().get_queryset()

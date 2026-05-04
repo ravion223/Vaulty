@@ -26,6 +26,10 @@ class AccountViewSet(viewsets.ModelViewSet):
         if is_frozen == 'true':
             queryset = queryset.filter(status='FROZEN')
 
+        currency = self.request.query_params.get('currency', None)
+        if currency:
+            queryset = queryset.filter(currency=currency)
+
         return queryset
 
 

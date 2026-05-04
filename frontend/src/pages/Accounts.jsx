@@ -11,7 +11,9 @@ const Accounts = () => {
     const[hasNext, setHasNext] = useState(false);
     const[hasPrevious, setHasPrevious] = useState(false);
 
-    const[filterFrozen, setFilterFrozen] = useState(false)
+    const[filterFrozen, setFilterFrozen] = useState(false);
+    
+    const[currencyFilter, setCurrencyFilter] = useState("");
 
     useEffect(() => {
         const fetchAccounts = async () => {
@@ -20,7 +22,10 @@ const Accounts = () => {
                 let url = `accounts/?page=${page}`;
                 if(filterFrozen){
                     url += `&is_frozen=${filterFrozen}`;
+                } else if(currencyFilter){
+                    url += `&currency=${currencyFilter}`;
                 }
+
                 const response = await apiClient.get(url)
                 setAccounts(response.data.results);
 
@@ -33,10 +38,15 @@ const Accounts = () => {
             }
         }
         fetchAccounts();
-    }, [page, filterFrozen]);
+    }, [page, filterFrozen, currencyFilter]);
 
     const toggleFrozenFilter = () => {
         setFilterFrozen((prev) => !prev);
+        setPage(1);
+    };
+
+    const handleCurrencyChange = (e) => {
+        setCurrencyFilter(e.target.value);
         setPage(1);
     };
 
@@ -46,16 +56,32 @@ const Accounts = () => {
                 <h2>
                     Bank accounts
                 </h2>
-                <button
-                onClick={toggleFrozenFilter}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        filterFrozen ? "bg-cyan-100 text-cyan-700 border border-cyan-200"
-                        : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
-                    }`}
-                >
-                <FiFilter size={16} />
-                {filterFrozen ? 'Show all' : 'Only frozen'}
-                </button>
+                <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
+                        <FiFilter className="text-mauve-500" />
+                        <span className="text-sm font-medium text-mauve-600">Currency:</span>
+                        
+                        <select
+                            value={currencyFilter}
+                            onChange={handleCurrencyChange}
+                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition">
+                            <option value="">All</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="UAH">UAH</option>
+                        </select>
+                    </div>
+                    <button
+                    onClick={toggleFrozenFilter}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                            filterFrozen ? "bg-cyan-100 text-cyan-700 border border-cyan-200"
+                            : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
+                        }`}
+                    >
+                    <FiFilter size={16} />
+                    {filterFrozen ? 'Show all' : 'Only frozen'}
+                    </button>
+                </div>
             </div>
             {loading ? 
             (

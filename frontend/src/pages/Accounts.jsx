@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../api/client'
+import { FiAlertCircle, FiFilter } from "react-icons/fi";
+import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 
 const Accounts = () => {
     const[accounts, setAccounts] = useState([]);
@@ -9,11 +11,17 @@ const Accounts = () => {
     const[hasNext, setHasNext] = useState(false);
     const[hasPrevious, setHasPrevious] = useState(false);
 
+    const[filterFrozen, setFilterFrozen] = useState(false)
+
     useEffect(() => {
         const fetchAccounts = async () => {
             setLoading(true);
             try {
-                const response = await apiClient.get(`accounts/?page=${page}`)
+                let url = `accounts/?page=${page}`;
+                if(filterFrozen){
+                    url += `&is_frozen=${filterFrozen}`;
+                }
+                const response = await apiClient.get(url)
                 setAccounts(response.data.results);
 
                 setHasNext(response.data.next !== null);
@@ -25,13 +33,30 @@ const Accounts = () => {
             }
         }
         fetchAccounts();
-    }, [page]);
+    }, [page, filterFrozen]);
+
+    const toggleFrozenFilter = () => {
+        setFilterFrozen((prev) => !prev);
+        setPage(1);
+    };
 
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <h2>
-                Bank accounts
-            </h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2>
+                    Bank accounts
+                </h2>
+                <button
+                onClick={toggleFrozenFilter}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        filterFrozen ? "bg-cyan-100 text-cyan-700 border border-cyan-200"
+                        : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
+                    }`}
+                >
+                <FiFilter size={16} />
+                {filterFrozen ? 'Show all' : 'Only frozen'}
+                </button>
+            </div>
             {loading ? 
             (
                 <div className="text-mauve-500">

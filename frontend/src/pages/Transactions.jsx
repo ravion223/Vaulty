@@ -20,7 +20,7 @@ const Transactions = () => {
             try{
                 let url = `transactions/?page=${page}`;
                 if(filterFlagged) {
-                    url += `&is_flagged=true`;
+                    url += `&is_flagged=${filterFlagged}`;
                 }
 
                 const response = await apiClient.get(url);
@@ -44,7 +44,7 @@ const Transactions = () => {
 
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <div className="flex justify-between itmes-center mb-6">
+            <div className="flex justify-between items-center mb-6">
                 <h2>
                     Bank transactions
                 </h2>

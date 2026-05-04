@@ -11,19 +11,27 @@ from .serializers import ClientSerializer, AccountSerializer, TransactionSeriali
 # Create your views here.
 
 class ClientViewSet(viewsets.ModelViewSet):
-    # avoiding n+1 query problem
     queryset = Client.objects.prefetch_related('accounts').all()
     serializer_class = ClientSerializer
     
 
 class AccountViewSet(viewsets.ModelViewSet):
-    # avoiding n+1 query problem
     queryset = Account.objects.select_related('client').all()
     serializer_class = AccountSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        is_frozen = self.request.query_params.get('is_frozen', None)
+        if is_frozen == 'true':
+            queryset = queryset.filter(status='FROZEN')
+
+        return queryset
+
+
 
 class TransactionViewSet(viewsets.ModelViewSet):
-    queryset = Transaction.objects.select_related('sender', 'receiver').all().order_by('-timestamp')
+    queryset = Transaction.objects.select_related('sender', 'receiver').all()
     serializer_class = TransactionSerializer
 
     def get_queryset(self):

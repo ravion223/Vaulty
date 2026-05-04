@@ -13,6 +13,15 @@ from .serializers import ClientSerializer, AccountSerializer, TransactionSeriali
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.prefetch_related('accounts').all()
     serializer_class = ClientSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        risk = self.request.query_params.get('risk', None)
+        if risk:
+            queryset = queryset.filter(risk_level=risk)
+
+        return queryset
     
 
 class AccountViewSet(viewsets.ModelViewSet):

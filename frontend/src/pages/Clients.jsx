@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { FiFilter } from "react-icons/fi";
 import apiClient from '../api/client'
 // add pagination
 const Clients = () => {
@@ -8,12 +9,18 @@ const Clients = () => {
     const [page, setPage] = useState(1);
     const [hasNext, setHasNext] = useState(false);
     const [hasPrevious, setHasPrevious] = useState(false);
+    
+    const [riskFilter, setRiskFilter] = useState("");
 
     useEffect(() =>{
         const fetchClients = async () => {
             setLoading(true);
             try {
-                const response = await apiClient.get(`clients/?page=${page}`);
+                let url = `clients/?page=${page}`;
+                if (riskFilter){
+                    url += `&risk=${riskFilter}`;
+                }
+                const response = await apiClient.get(url);
                 setClients(response.data.results);
 
                 setHasNext(response.data.next !== null);
@@ -26,13 +33,34 @@ const Clients = () => {
         };
         
         fetchClients();
-    }, [page]);
+    }, [page, riskFilter]);
+
+    const handleRiskFilter = (e) => {
+        setRiskFilter(e.target.value);
+        setPage(1);
+    }
 
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <h2 className="font-stretch-expanded">
-                Bank clients
-            </h2>
+            <div class="flex justify-between items-center">
+                <h2 className="font-stretch-expanded">
+                    Bank clients
+                </h2>
+                <div className="flex gap-2 items-center">
+                    <FiFilter className="text-mauve-500" />
+                    <span className="text-sm font-medium text-mauve-600">Risk:</span>
+                    <select
+                    value={riskFilter}
+                    onChange={handleRiskFilter}
+                    className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
+                        <option value="">All</option>
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HIGH">High</option>
+                    </select>
+                </div>
+            </div>
+               
             {loading ? (
                 <div className="text-mauve-500">
                     Loading clients data...

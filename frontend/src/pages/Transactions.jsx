@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import apiClient from "../api/client"
-import { FaFlag } from "react-icons/fa";
+import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
+import { FiAlertCircle, FiFilter } from "react-icons/fi";
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -11,11 +12,18 @@ const Transactions = () => {
     const[hasNext, setHasNext] = useState(false);
     const[hasPrevious, setHasPrevious] = useState(false);
 
+    const[filterFlagged, setFilterFlagged] = useState(false); 
+
     useEffect(() => {
         const fetchTransactions = async () => {
             setLoading(true);
             try{
-                const response = await apiClient.get("transactions/");
+                let url = `transactions/?page=${page}`;
+                if(filterFlagged) {
+                    url += `&is_flagged=true`;
+                }
+
+                const response = await apiClient.get(url);
                 setTransactions(response.data.results);
 
                 setHasNext(response.data.next !== null)
@@ -27,13 +35,30 @@ const Transactions = () => {
             }
         }
         fetchTransactions() 
-    }, [page]);
+    }, [page, filterFlagged]);
+
+    const toggleFlaggedFilter = () => {
+        setFilterFlagged((prev) => !prev);
+        setPage(1);
+    }
 
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <h2>
-                Bank transactions
-            </h2>
+            <div className="flex justify-between itmes-center mb-6">
+                <h2>
+                    Bank transactions
+                </h2>
+                <button
+                    onClick={toggleFlaggedFilter}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        filterFlagged ? "bg-red-50 text-red-700 border border-red-200"
+                        : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
+                    }`}
+                >
+                    <FiFilter size={16} />
+                    {filterFlagged ? "Show all" : "Only flagged"}
+                </button>
+            </div>
             {loading ? 
             (
                 <div className="text-mauve-500">

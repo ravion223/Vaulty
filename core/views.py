@@ -23,8 +23,17 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
-    queryset = Transaction.objects.all()
+    queryset = Transaction.objects.select_related('sender', 'receiver').all().order_by('-timestamp')
     serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        is_flagged = self.request.query_params.get('is_flagged', None)
+        if is_flagged == 'true':
+            queryset = queryset.filter(is_flagged=True)
+
+        return queryset
 
 
 class DashboardStatsView(APIView):

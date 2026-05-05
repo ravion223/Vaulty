@@ -31,6 +31,9 @@ class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.select_related('client').all()
     serializer_class = AccountSerializer
 
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['client__first_name', 'client__last_name']
+
     def get_queryset(self):
         queryset = super().get_queryset()
 

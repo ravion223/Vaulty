@@ -15,6 +15,8 @@ const Accounts = () => {
     
     const[currencyFilter, setCurrencyFilter] = useState("");
 
+    const[searchQuery, setSearchQuery] = useState("");
+
     useEffect(() => {
         const fetchAccounts = async () => {
             setLoading(true);
@@ -22,8 +24,12 @@ const Accounts = () => {
                 let url = `accounts/?page=${page}`;
                 if(filterFrozen){
                     url += `&is_frozen=${filterFrozen}`;
-                } else if(currencyFilter){
+                } 
+                if(currencyFilter){
                     url += `&currency=${currencyFilter}`;
+                }
+                if(searchQuery){
+                    url += `&search=${searchQuery}`
                 }
 
                 const response = await apiClient.get(url)
@@ -37,8 +43,11 @@ const Accounts = () => {
                 setLoading(false);
             }
         }
-        fetchAccounts();
-    }, [page, filterFrozen, currencyFilter]);
+        const delayBounceFn = setTimeout(() =>{
+            fetchAccounts();
+        }, 500);
+        
+    }, [page, filterFrozen, currencyFilter, searchQuery]);
 
     const toggleFrozenFilter = () => {
         setFilterFrozen((prev) => !prev);
@@ -49,6 +58,11 @@ const Accounts = () => {
         setCurrencyFilter(e.target.value);
         setPage(1);
     };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setPage(1);
+    }
 
     const toggleAccountStatus = async (accountId, currentStatus) => {
         const newStatus = currentStatus === "FROZEN" ? "ACTIVE" : "FROZEN";
@@ -73,6 +87,18 @@ const Accounts = () => {
                 <h2>
                     Bank accounts
                 </h2>
+                <div className="relative w-full sm:w-72">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <FiSearch className="text-mauve-400" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search by name, surname..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    />
+                </div>
                 <div className="flex gap-2">
                     <div className="flex items-center gap-2">
                         <FiFilter className="text-mauve-500" />

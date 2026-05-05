@@ -58,7 +58,7 @@ const Clients = () => {
 
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <div class="flex justify-between items-center">
+            <div className="flex justify-between items-center">
                 <h2 className="font-stretch-expanded">
                     Bank clients
                 </h2>
@@ -124,15 +124,17 @@ const Clients = () => {
                                         {client.first_name} {client.last_name}
                                     </td>
                                     <td className="pl-1 text-mauve-60">{client.email}</td>
-                                    <div className="pl-">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                            client.risk_level === "HIGH" ?
-                                            'bg-red-100 text-red-700' : client.risk_level === "MEDIUM" ?
-                                            'bg-amber-100 text-amber-700' :
-                                            'bg-emerald-100 text-emerald-700'}`}>
-                                            <td className="py-3">{client.risk_level}</td>
-                                        </span>
-                                    </div>
+                                    <td className="py-3">
+                                        <div className="pl-">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                                client.risk_level === "HIGH" ?
+                                                'bg-red-100 text-red-700' : client.risk_level === "MEDIUM" ?
+                                                'bg-amber-100 text-amber-700' :
+                                                'bg-emerald-100 text-emerald-700'}`}>
+                                                {client.risk_level}
+                                            </span>
+                                        </div>
+                                    </td>
                                     <td className="pl-1">{client.accounts.length}</td>
                                 </tr>
                             ))}
@@ -142,7 +144,7 @@ const Clients = () => {
                         <div className="flex items-center justify-between border-t border-mauve-200 mt-4 pt-4">
                             <button
                                 onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-                                disable={!hasPrevious}
+                                disabled={!hasPrevious}
                                 className="px-4 py-2 text-sm font-medium text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-200 disabled:opacity-50 disabled:cursor-not-allowed transition duration-500"
                             >
                                 Previous
@@ -152,7 +154,7 @@ const Clients = () => {
                             </span>
                             <button
                                 onClick={() => setPage((prev) => prev + 1)}
-                                disable={!hasNext}
+                                disabled={!hasNext}
                                 className="px-4 py-2 text-sm font-medium text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-200 disabled:opacity-50 disabled:cursor-not-allowed transition duration-500"
                             >
                                 Next

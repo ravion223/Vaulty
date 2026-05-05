@@ -47,6 +47,7 @@ const Accounts = () => {
             fetchAccounts();
         }, 500);
         
+        return () => clearTimeout(delayDebounceFn)
     }, [page, filterFrozen, currencyFilter, searchQuery]);
 
     const toggleFrozenFilter = () => {

@@ -14,6 +14,8 @@ const Transactions = () => {
 
     const[filterFlagged, setFilterFlagged] = useState(false); 
 
+    const[searchQuery, setSearchQuery] = useState("");
+
     useEffect(() => {
         const fetchTransactions = async () => {
             setLoading(true);
@@ -21,6 +23,9 @@ const Transactions = () => {
                 let url = `transactions/?page=${page}`;
                 if(filterFlagged) {
                     url += `&is_flagged=${filterFlagged}`;
+                }
+                if(searchQuery) {
+                    url += `&search=${searchQuery}`;
                 }
 
                 const response = await apiClient.get(url);
@@ -34,8 +39,13 @@ const Transactions = () => {
                 setLoading(false);
             }
         }
-        fetchTransactions() 
-    }, [page, filterFlagged]);
+
+        const delayDebounceFn = setTimeout(() => {
+            fetchTransactions()
+        }, 500)
+
+        return () => clearTimeout(delayDebounceFn)
+    }, [page, filterFlagged, searchQuery]);
 
     const toggleFlaggedFilter = () => {
         setFilterFlagged((prev) => !prev);
@@ -58,12 +68,29 @@ const Transactions = () => {
         }
     }
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setPage(1);
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
                 <h2>
                     Bank transactions
                 </h2>
+                <div className="relative w-full sm:w-72">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <FiSearch className="text-mauve-400" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search by name, surname..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    />
+                </div>
                 <button
                     onClick={toggleFlaggedFilter}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -99,7 +126,8 @@ const Transactions = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b-mauve-200 border-b text-mauve-500 font-mono">
-                                <th className="pb-3">Sender</th>
+                                <th className="pb-3">ID</th>
+                                <th className="pl-1 pb-3">Sender</th>
                                 <th className="pl-1 pb-3">Receiver</th>
                                 <th className="pl-1 pb-3">Amount</th>
                                 <th className="pl-1 pb-3">Status</th>
@@ -111,6 +139,9 @@ const Transactions = () => {
                         <tbody>
                             {transactions.map((transaction) => (
                                 <tr key={transaction.id} className="border-b border-b-mauve-200 hover:bg-mauve-100 transition duration-250">
+                                    <td className="py-3 text-mauve-500 font-mono text-sm" title={transaction.id}>
+                                        TRX-{transaction.id.slice(0, 6)} 
+                                    </td>
                                     <td className="py-3 text-mauve-800 font-medium">
                                         {transaction.receiver_name}
                                         

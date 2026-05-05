@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import apiClient from "../api/client"
 import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
-import { FiAlertCircle, FiFilter, FiCheck, FiFlag } from "react-icons/fi";
+import { FiSearch, FiAlertCircle, FiFilter, FiCheck, FiFlag } from "react-icons/fi";
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -75,12 +75,26 @@ const Transactions = () => {
                     {filterFlagged ? "Show all" : "Only flagged"}
                 </button>
             </div>
-            {loading ? 
+            {loading && 
             (
                 <div className="text-mauve-500">
                     Loading transaction data...
                 </div>
-            ) : (
+            )}
+            {!loading && transactions.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="bg-mauve-50 p-4 rounded-full mb-4">
+                        <FiSearch size={32} className="text-mauve-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-mauve-900 mb-1">
+                        Transactions not found
+                    </h3>
+                    <p className="text-sm text-mauve-500 max-w-sm">
+                        No transactions found for your request. Try to change search text or clear filters.
+                    </p>
+                </div>
+            )}
+            {!loading && transactions.length > 0 && (
                 <div>
                     <table className="w-full text-left border-collapse">
                         <thead>

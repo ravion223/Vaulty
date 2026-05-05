@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../api/client'
-import { FiAlertCircle, FiFilter } from "react-icons/fi";
+import { FiAlertCircle, FiFilter, FiSearch } from "react-icons/fi";
 import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 
 const Accounts = () => {
@@ -100,12 +100,26 @@ const Accounts = () => {
                     </button>
                 </div>
             </div>
-            {loading ? 
+            {loading &&
             (
                 <div className="text-mauve-500">
                     Loading accounts data...
                 </div>
-            ) : (
+            )}
+            {!loading && accounts.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="bg-mauve-50 p-4 rounded-full mb-4">
+                        <FiSearch size={32} className="text-mauve-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-mauve-900 mb-1">
+                        Accounts not found
+                    </h3>
+                    <p className="text-sm text-mauve-500 max-w-sm">
+                        No accounts found for your request. Try to clear filters.
+                    </p>
+                </div>
+            )}
+            {!loading && accounts.length > 0 && (
                 <div>
                     <table className="w-full text-left border-collapse">
                         <thead>

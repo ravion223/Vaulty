@@ -50,6 +50,23 @@ const Accounts = () => {
         setPage(1);
     };
 
+    const toggleAccountStatus = async (accountId, currentStatus) => {
+        const newStatus = currentStatus === "FROZEN" ? "ACTIVE" : "FROZEN";
+
+        try {
+            await apiClient.patch(`accounts/${accountId}/`, { status: newStatus });
+            
+            setAccounts((prevAccounts) => 
+                prevAccounts.map((account) => 
+                    account.id === accountId ? { ...account, status: newStatus } : account
+                )
+            );
+        } catch(error) {
+            console.log("Error when updating status:", error);
+            alert("Couldn't change status of account. Check console")
+        }
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
@@ -99,6 +116,7 @@ const Accounts = () => {
                                 <th className="pl-1 pb-3 text-right">Balance</th>
                                 <th className="pl-1 pb-3 text-center">Status</th>
                                 <th className="pl-1 pb-3">Creation date</th>
+                                <th className="pl-1 pb-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,6 +148,18 @@ const Accounts = () => {
                                     </td>
                                     <td className="pl-1">
                                         {new Date(account.created_at).toLocaleDateString('uk-UA')}
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() => toggleAccountStatus(account.id, account.status)}
+                                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                                                account.status === "ACTIVE" 
+                                                ? "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200" 
+                                                : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"
+                                            }`}
+                                        >
+                                            { account.status === "ACTIVE" ? "Freeze" : "Activate" }
+                                        </button>
                                     </td>
                                     
                                 </tr>

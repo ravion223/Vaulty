@@ -154,7 +154,7 @@ const Accounts = () => {
                                             onClick={() => toggleAccountStatus(account.id, account.status)}
                                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                                                 account.status === "ACTIVE" 
-                                                ? "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200" 
+                                                ? "bg-white text-mauve-400 border-mauve-200 hover:bg-cyan-50 hover:text-cyan-600 border hover:border-cyan-200" 
                                                 : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"
                                             }`}
                                         >

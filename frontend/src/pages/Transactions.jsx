@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import apiClient from "../api/client"
 import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
-import { FiAlertCircle, FiFilter } from "react-icons/fi";
+import { FiAlertCircle, FiFilter, FiCheck, FiFlag } from "react-icons/fi";
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -42,6 +42,22 @@ const Transactions = () => {
         setPage(1);
     }
 
+    const toggleFlagTransaction = async (transactionId, isFlagged) => {
+        const newFlaggedStatus = !isFlagged
+        
+        try {
+            await apiClient.patch(`transactions/${transactionId}/`, {is_flagged: newFlaggedStatus})
+
+            setTransactions((prevTransactions) => 
+                prevTransactions.map((transaction) => 
+                    transaction.id === transactionId ? {...transaction, is_flagged: newFlaggedStatus} : transaction
+                )
+        )} catch(error) {
+            console.log("Error when changing flagged status:", error)
+            alert("Couldn't changed status for transaction")
+        }
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
@@ -75,6 +91,7 @@ const Transactions = () => {
                                 <th className="pl-1 pb-3">Status</th>
                                 <th className="pl-1 pb-3">is flagged</th>
                                 <th className="pl-1 pb-3">Timestamp</th>
+                                <th className="pl-1 pb-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -112,7 +129,28 @@ const Transactions = () => {
                                     <td className="pl-1">
                                         {new Date(transaction.timestamp).toLocaleDateString('uk-UA')}
                                     </td>
-                                    
+                                    <td className="pl-1 text-left py-3">
+                                        <button
+                                            onClick={() => toggleFlagTransaction(transaction.id, transaction.is_flagged)}
+                                            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+                                            transaction.is_flagged 
+                                                ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 shadow-sm" // Дія: Зняти прапорець (Позитивна)
+                                                : "bg-white text-mauve-400 border-mauve-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200" // Дія: Поставити прапорець (Непомітна до ховеру)
+                                            }`}
+                                        >
+                                            {transaction.is_flagged ? (
+                                            <>
+                                                <FiCheck size={14} />
+                                                Resolve
+                                            </>
+                                            ) : (
+                                            <>
+                                                <FiFlag size={14} />
+                                                Report
+                                            </>
+                                            )}
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

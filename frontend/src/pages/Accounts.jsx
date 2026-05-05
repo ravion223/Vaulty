@@ -43,10 +43,11 @@ const Accounts = () => {
                 setLoading(false);
             }
         }
-        const delayBounceFn = setTimeout(() =>{
+        const delayDebounceFn = setTimeout(() =>{
             fetchAccounts();
         }, 500);
-        
+
+        return () => clearTimeout(delayDebounceFn)
     }, [page, filterFrozen, currencyFilter, searchQuery]);
 
     const toggleFrozenFilter = () => {

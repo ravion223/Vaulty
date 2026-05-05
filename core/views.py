@@ -53,6 +53,15 @@ class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.select_related('sender', 'receiver').all()
     serializer_class = TransactionSerializer
 
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'id',
+        'sender__client__first_name',
+        'sender__client__last_name',
+        'receiver__client__first_name',
+        'receiver__client__last_name'
+    ]
+
     def get_queryset(self):
         queryset = super().get_queryset()
 

@@ -46,11 +46,6 @@ const Accounts = () => {
         const delayDebounceFn = setTimeout(() =>{
             fetchAccounts();
         }, 500);
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> e099398b64585a751ea507d1b0532b36ccd43fd5
         return () => clearTimeout(delayDebounceFn)
     }, [page, filterFrozen, currencyFilter, searchQuery]);
 

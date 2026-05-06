@@ -56,6 +56,21 @@ const Clients = () => {
         setPage(1);
     };
 
+    const updateRiskLevel = async (clientId, newRisk) => {
+        try {
+            await apiClient.patch(`clients/${clientId}/`, { risk_level: newRisk });
+
+            setClients((prevClients) =>
+                prevClients.map((client) =>
+                    client.id === clientId ? { ...client, risk_level: newRisk } : client
+                )
+            );
+        } catch (error){
+            console.log("Error updating risk level: ", error);
+            alert("Couldn't change risk level of client")
+        }
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center">
@@ -115,6 +130,7 @@ const Clients = () => {
                                 <th className="pl-1 pb-3 font-mono">Email</th>
                                 <th className="pl-1 pb-3 font-mono">Risk</th>
                                 <th className="pl-1 pb-3 font-mono">Accounts count</th>
+                                <th className="pl-1 pb-3 font-mono">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,6 +152,23 @@ const Clients = () => {
                                         </div>
                                     </td>
                                     <td className="pl-1">{client.accounts.length}</td>
+                                    <td>
+                                        <select
+                                        value={client.risk_level}
+                                        onChange={(e) => updateRiskLevel(client.id, e.target.value)}
+                                        className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors cursor-pointer outline-none ${
+                                            client.risk_level === "HIGH"
+                                            ? "bg-red-50 text-red-700 border-red-200"
+                                            : client.risk_level === "MEDIUM"
+                                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                                            : "bg-white text-mauve-500 border-mauve-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition duration-200"
+                                        }`}
+                                        >
+                                            <option value="LOW">Low</option>
+                                            <option value="MEDIUM">Medium</option>
+                                            <option value="HIGH">High</option>
+                                        </select>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

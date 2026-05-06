@@ -69,6 +69,10 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if is_flagged == 'true':
             queryset = queryset.filter(is_flagged=True)
 
+        status = self.request.query_params.get('status', None)
+        if status:
+            queryset = queryset.filter(status=status)
+
         return queryset
 
 

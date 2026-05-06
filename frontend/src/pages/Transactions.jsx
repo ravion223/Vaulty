@@ -13,6 +13,7 @@ const Transactions = () => {
     const[hasPrevious, setHasPrevious] = useState(false);
 
     const[filterFlagged, setFilterFlagged] = useState(false); 
+    const[statusFilter, setStatusFilter] = useState("");
 
     const[searchQuery, setSearchQuery] = useState("");
 
@@ -26,6 +27,9 @@ const Transactions = () => {
                 }
                 if(searchQuery) {
                     url += `&search=${searchQuery}`;
+                }
+                if(statusFilter) {
+                    url += `&status=${statusFilter}`;
                 }
 
                 const response = await apiClient.get(url);
@@ -45,7 +49,7 @@ const Transactions = () => {
         }, 500)
 
         return () => clearTimeout(delayDebounceFn)
-    }, [page, filterFlagged, searchQuery]);
+    }, [page, filterFlagged, searchQuery, statusFilter]);
 
     const toggleFlaggedFilter = () => {
         setFilterFlagged((prev) => !prev);
@@ -73,6 +77,11 @@ const Transactions = () => {
         setPage(1);
     }
 
+    const handleStatusChange = (e) => {
+        setStatusFilter(e.target.value);
+        setPage(1);
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
@@ -91,16 +100,32 @@ const Transactions = () => {
                         className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                 </div>
-                <button
-                    onClick={toggleFlaggedFilter}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        filterFlagged ? "bg-red-50 text-red-700 border border-red-200"
-                        : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
-                    }`}
-                >
-                    <FiFilter size={16} />
-                    {filterFlagged ? "Show all" : "Only flagged"}
-                </button>
+                <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
+                            <FiFilter className="text-mauve-500" />
+                            <span className="text-sm font-medium text-mauve-600">Status:</span>
+                            
+                            <select
+                                value={statusFilter}
+                                onChange={handleStatusChange}
+                                className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition">
+                                <option value="">All</option>
+                                <option value="COMPLETED">Completed</option>
+                                <option value="PROCESSING">Processing</option>
+                                <option value="FAILED">Failed</option>
+                            </select>
+                    </div>
+                    <button
+                        onClick={toggleFlaggedFilter}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                            filterFlagged ? "bg-red-50 text-red-700 border border-red-200"
+                            : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
+                        }`}
+                    >
+                        <FiFilter size={16} />
+                        {filterFlagged ? "Show all" : "Only flagged"}
+                    </button>
+                </div>
             </div>
             {loading && 
             (

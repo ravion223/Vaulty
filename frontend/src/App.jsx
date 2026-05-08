@@ -10,6 +10,7 @@ import Accounts from "./pages/Accounts"
 import Dashboard from "./pages/Dashboard"
 import Transactions from "./pages/Transactions"
 import LoginPage from "./pages/LoginPage"
+import PrivateRoute from "../components/PrivateRoute"
 
 function App() {
   return (
@@ -17,13 +18,18 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />}/>
 
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="clients" element={<Clients /> } />
-          <Route path="accounts" element={<Accounts />} />
-          <Route path="transactions" element={<Transactions />} />
+        <Route element={<PrivateRoute />}>
+
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="clients" element={<Clients /> } />
+            <Route path="accounts" element={<Accounts />} />
+            <Route path="transactions" element={<Transactions />} />
+          </Route>
+          
         </Route>
+
       </Routes>
     </Router>
     );

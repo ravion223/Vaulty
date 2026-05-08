@@ -20,8 +20,15 @@ apiClient.interceptors.response.use(
     },
     (error) => {
         if (error.response && error.response.status === 401) {
+            const requestUrl = error.config.url;
+            if (requestUrl && requestUrl.includes('token/')){
+                return Promise.reject(error);
+            }
+
             console.warn("Token is not valid. Redirecting to login page...");
             localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('username');
             window.location.href = '/login';
         }
         return Promise.reject(error);

@@ -23,8 +23,7 @@ apiClient.interceptors.response.use(
         if (error.response && error.response.status === 401) {
             console.warn("Token is not valid. Redirecting to login page...");
             localStorage.removeItem('access_token');
-            // /login in future
-            window.location.href = '/';
+            window.location.href = '/login';
         }
         return Promise.reject(error);
     }

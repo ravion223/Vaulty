@@ -29,6 +29,8 @@ const LoginPage = () => {
 
             localStorage.setItem('access_token', access);
             localStorage.setItem('refresh_token', refresh);
+            
+            localStorage.setItem('username', username)
 
             navigate('/dashboard');
         } catch(error) {

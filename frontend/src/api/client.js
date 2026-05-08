@@ -14,7 +14,6 @@ apiClient.interceptors.request.use((config) => {
     return config;
 })
 
-// unauthorized error handler for future authorization
 apiClient.interceptors.response.use(
     (response) => {
         return response

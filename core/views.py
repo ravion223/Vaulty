@@ -1,5 +1,12 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncDate
+from django.utils import timezone
+from datetime import timedelta
 from .models import Client, Account, Transaction
 from .serializers import ClientSerializer, AccountSerializer, TransactionSerializer
 
@@ -8,13 +15,103 @@ from .serializers import ClientSerializer, AccountSerializer, TransactionSeriali
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.prefetch_related('accounts').all()
     serializer_class = ClientSerializer
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        risk = self.request.query_params.get('risk', None)
+        if risk:
+            queryset = queryset.filter(risk_level=risk)
+
+        return queryset
     
 
 class AccountViewSet(viewsets.ModelViewSet):
-    queryset = Account.objects.all()
+    queryset = Account.objects.select_related('client').all()
     serializer_class = AccountSerializer
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['client__first_name', 'client__last_name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        is_frozen = self.request.query_params.get('is_frozen', None)
+        if is_frozen == 'true':
+            queryset = queryset.filter(status='FROZEN')
+
+        currency = self.request.query_params.get('currency', None)
+        if currency:
+            queryset = queryset.filter(currency=currency)
+
+        return queryset
+
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
-    queryset = Transaction.objects.all()
+    queryset = Transaction.objects.select_related('sender', 'receiver').all()
     serializer_class = TransactionSerializer
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'id',
+        'sender__client__first_name',
+        'sender__client__last_name',
+        'receiver__client__first_name',
+        'receiver__client__last_name'
+    ]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        is_flagged = self.request.query_params.get('is_flagged', None)
+        if is_flagged == 'true':
+            queryset = queryset.filter(is_flagged=True)
+
+        status = self.request.query_params.get('status', None)
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset
+
+
+class DashboardStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        total_balance = Account.objects.aggregate(total=Sum('balance'))['total'] or 0
+
+        active_clients = Client.objects.count()
+
+        flagged_tx = Transaction.objects.filter(is_flagged=True).count()
+
+        today = timezone.now().date()
+        last_7_days = today - timedelta(days=6)
+        tx_7_days = Transaction.objects.filter(timestamp__gte=last_7_days).count()
+
+        daily_stats = Transaction.objects.filter(timestamp__gte=last_7_days)\
+            .annotate(day=TruncDate('timestamp'))\
+            .values('day')\
+            .annotate(total=Sum('amount'))\
+            .order_by('day')
+        
+        stats_dict = {item['day']: item['total'] for item in daily_stats}
+
+        chart_data = []
+        for i in range(7):
+            current_day = last_7_days + timedelta(days=i)
+            chart_data.append({
+                "name": current_day.strftime("%a"),
+                "balance": stats_dict.get(current_day, 0)
+            })
+
+        return Response({
+            "total_balance": total_balance,
+            "active_clients": active_clients,
+            "transactions_7_days": tx_7_days,
+            "flagged_transactions": flagged_tx,
+            "chart_data": chart_data,
+        })

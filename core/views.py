@@ -2,7 +2,9 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Sum
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncDate
 from django.utils import timezone
 from datetime import timedelta
 from .models import Client, Account, Transaction
@@ -77,31 +79,39 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
 
 class DashboardStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         total_balance = Account.objects.aggregate(total=Sum('balance'))['total'] or 0
 
         active_clients = Client.objects.count()
 
-        yesterday = timezone.now() - timedelta(days=1)
-        tx_24h = Transaction.objects.filter(timestamp__gte=yesterday).count()
-
         flagged_tx = Transaction.objects.filter(is_flagged=True).count()
 
-        # Static for now
-        chart_data = [
-            { 'name': 'Mon', 'balance': 4000 },
-            { 'name': 'Tue', 'balance': 3000 },
-            { 'name': 'Wed', 'balance': 5000 },
-            { 'name': 'Thu', 'balance': 2780 },
-            { 'name': 'Fri', 'balance': 8890 },
-            { 'name': 'Sat', 'balance': 2390 },
-            { 'name': 'Sun', 'balance': float(total_balance % 10000) },
-        ]
+        today = timezone.now().date()
+        last_7_days = today - timedelta(days=6)
+        tx_7_days = Transaction.objects.filter(timestamp__gte=last_7_days).count()
+
+        daily_stats = Transaction.objects.filter(timestamp__gte=last_7_days)\
+            .annotate(day=TruncDate('timestamp'))\
+            .values('day')\
+            .annotate(total=Sum('amount'))\
+            .order_by('day')
+        
+        stats_dict = {item['day']: item['total'] for item in daily_stats}
+
+        chart_data = []
+        for i in range(7):
+            current_day = last_7_days + timedelta(days=i)
+            chart_data.append({
+                "name": current_day.strftime("%a"),
+                "balance": stats_dict.get(current_day, 0)
+            })
 
         return Response({
             "total_balance": total_balance,
             "active_clients": active_clients,
-            "transactions_24h": tx_24h,
+            "transactions_7_days": tx_7_days,
             "flagged_transactions": flagged_tx,
             "chart_data": chart_data,
         })

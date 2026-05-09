@@ -3,21 +3,11 @@ import { FiUsers, FiDollarSign, FiActivity, FiAlertTriangle } from "react-icons/
 import { useState, useEffect } from "react";
 import apiClient from "../api/client";
 
-// const chartData = [
-//     { name: 'Mon', balance: 4000 },
-//     { name: 'Tue', balance: 3000 },
-//     { name: 'Wed', balance: 5000 },
-//     { name: 'Thu', balance: 2780 },
-//     { name: 'Fri', balance: 8890 },
-//     { name: 'Sat', balance: 2390 },
-//     { name: 'Sun', balance: 3490 },
-// ];
-
 const Dashboard = () => {
     const [stats, setStats] = useState({
         total_balance: 0,
         active_clients: 0,
-        transactions_24h: 0,
+        transactions_7_days: 0,
         flagged_transactions: 0,
         chart_data: []
     })
@@ -74,8 +64,8 @@ const Dashboard = () => {
             <FiActivity size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-mauve-500">Transactions in 24h</p>
-            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">{stats.transactions_24h}</h3>
+            <p className="text-sm font-medium text-mauve-500">Transactions in 7 days</p>
+            <h3 className="text-2xl font-bold text-mauve-900 tabular-nums">{stats.transactions_7_days}</h3>
           </div>
         </div>
 

@@ -78,11 +78,11 @@ const Clients = () => {
     const handleAddClient = async (clientData) => {
         try {
             const response = await apiClient.post('/clients/', clientData);
-
             setClients(prevClients => [response.data, ...prevClients]);
         } catch (error) {
             console.error("Failed to create new Client", error);
             alert("Error creating Client. Check console");
+            // returns error to where function was called
             throw error;
         }
     }

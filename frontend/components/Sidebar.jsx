@@ -12,7 +12,7 @@ const Sidebar = () => {
         <aside className="w-64 bg-mauve-900 h-screen text-white flex flex-col">
             <div className="h-16 flex items-center justify-center border-b border-mauve-800">
                 <h1 className="text-2xl font-bold tracking-wider text-indigo-200">
-                    VaultCore
+                    Vaulty
                 </h1>
             </div>
 

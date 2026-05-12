@@ -23,7 +23,8 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-        reset
+        reset,
+        setError
     } = useForm({
         resolver: zodResolver(clientSchema),
         defaultValues: {
@@ -33,10 +34,27 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
     });
 
     const onSubmit = async (data) => {
-        await onAdd(data);
-        reset();
-        onClose();
-    }
+        try {
+            await onAdd(data);
+            reset();
+            onClose();
+        } catch (error) {
+            if (error.response && error.response.data){
+                const backendErrors = error.response.data;
+
+                Object.keys(backendErrors).forEach((field) => {
+                    if (backendErrors[field] && Array.isArray(backendErrors[field])) {
+                        setError(field, {
+                            type: "server",
+                            message: backendErrors[field][0]
+                        });
+                    }
+                })
+            } else {
+                console.log("Unknown error:", error);
+            }
+        }
+    };
 
     if (!isOpen) return null;
 

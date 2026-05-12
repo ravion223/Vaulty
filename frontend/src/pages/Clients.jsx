@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { FiFilter } from "react-icons/fi";
 import apiClient from '../api/client';
 import { FiSearch } from "react-icons/fi"
+import AddClientModal from '../../components/AddClientModal';
+
 // add pagination
 const Clients = () => {
     const [clients, setClients] = useState([]);
@@ -14,6 +16,8 @@ const Clients = () => {
     const [riskFilter, setRiskFilter] = useState("");
 
     const [searchQuery, setSearchQuery] = useState("");
+    
+    const[isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     useEffect(() =>{
         const fetchClients = async () => {
@@ -71,13 +75,36 @@ const Clients = () => {
         }
     }
 
+    const handleAddClient = async (clientData) => {
+        try {
+            const response = await apiClient.post('/clients/', clientData);
+            setClients(prevClients => [response.data, ...prevClients]);
+        } catch (error) {
+            console.error("Failed to create new Client", error);
+            alert("Error creating Client. Check console");
+            // returns error to where function was called
+            throw error;
+        }
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <div className="flex justify-between items-center">
-                <h2 className="font-stretch-expanded">
-                    Bank clients
-                </h2>
-                <div className="relative w-full sm:w-72">
+            {/* <div className="flex justify-between items-center"> */}
+            <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
+                <div className='flex items-center gap-3'>
+                    <h2 className="font-stretch-expanded">
+                        Bank clients
+                    </h2>
+                    <button
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-500"
+                    >
+                        + Add Client
+                    </button>
+                </div>
+                
+                <div className='flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto'>
+                    <div className="relative w-full sm:w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <FiSearch className="text-mauve-400" />
                     </div>
@@ -88,20 +115,22 @@ const Clients = () => {
                         onChange={handleSearchChange}
                         className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
+                    </div>
+                    <div className="flex gap-2 items-center">
+                        <FiFilter className="text-mauve-500" />
+                        <span className="text-sm font-medium text-mauve-600">Risk:</span>
+                        <select
+                        value={riskFilter}
+                        onChange={handleRiskFilter}
+                        className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
+                            <option value="">All</option>
+                            <option value="LOW">Low</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="HIGH">High</option>
+                        </select>
+                    </div>
                 </div>
-                <div className="flex gap-2 items-center">
-                    <FiFilter className="text-mauve-500" />
-                    <span className="text-sm font-medium text-mauve-600">Risk:</span>
-                    <select
-                    value={riskFilter}
-                    onChange={handleRiskFilter}
-                    className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
-                        <option value="">All</option>
-                        <option value="LOW">Low</option>
-                        <option value="MEDIUM">Medium</option>
-                        <option value="HIGH">High</option>
-                    </select>
-                </div>
+                
             </div>
             {loading && (
                 <div className="text-mauve-500">
@@ -196,6 +225,11 @@ const Clients = () => {
                     )}
                 </div>
             )}
+            <AddClientModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onAdd={handleAddClient} 
+            />
         </div>
     )
 }

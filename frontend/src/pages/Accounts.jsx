@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import apiClient from '../api/client'
 import { FiAlertCircle, FiFilter, FiSearch } from "react-icons/fi";
 import { FaCircleCheck, FaFlag } from "react-icons/fa6";
+import AddAccountModal from '../../components/AddAccountModal';
 
 const Accounts = () => {
     const[accounts, setAccounts] = useState([]);
@@ -16,6 +17,21 @@ const Accounts = () => {
     const[currencyFilter, setCurrencyFilter] = useState("");
 
     const[searchQuery, setSearchQuery] = useState("");
+
+    const[isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const[clientsList, setClientsList] = useState([]);
+
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const response = await apiClient.get('clients/');
+                setClientsList(response.data.results || response.data);
+            } catch (error) {
+                console.error("Failed to load clients list: ", error);
+            }
+        }
+        fetchClients();
+    }, []);
 
     useEffect(() => {
         const fetchAccounts = async () => {
@@ -81,12 +97,30 @@ const Accounts = () => {
         }
     }
 
+    const handleAddAccount = async (accountData) => {
+        try {
+            const response = await apiClient.post('accounts/', accountData);
+            setAccounts(prevAccounts => [response.data, ...prevAccounts]);
+        } catch (error) {
+            console.error("Failed to create an account: ", error);
+            throw error;
+        }
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
-                <h2>
-                    Bank accounts
-                </h2>
+                <div className="flex items-center gap-4">
+                    <h2 className="text-2xl font-bold text-mauve-900 font-stretch-expanded">
+                        Bank accounts
+                    </h2>
+                    <button
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap"
+                    >
+                        + Open Account
+                    </button>
+                </div>
                 <div className="relative w-full sm:w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <FiSearch className="text-mauve-400" />
@@ -229,6 +263,12 @@ const Accounts = () => {
                     )}
                 </div>
             )}
+            <AddAccountModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onAdd={handleAddAccount}
+                clients={clientsList}
+            />
         </div>
     )
 }

@@ -59,11 +59,11 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
     if (!isOpen) return null;
 
     return (
-        <div>
-            <div>
-                <div>
-                    <h2>Add New CLient</h2>
-                    <button onClick={onClose}>
+        <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm'>
+            <div className='py-4 px-6 bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden'>
+                <div className='flex items-center justify-between'>
+                    <h2>Add New Client</h2>
+                    <button onClick={onClose} className='pb-3 text-gray-400 hover:text-red-500 transition-colors'>
                         <FiX size={20} />
                     </button>
                 </div>

@@ -1,4 +1,5 @@
 import uuid
+import random
 from django.db import models
 
 # Create your models here.
@@ -104,6 +105,12 @@ class Account(models.Model):
         ordering = ['-created_at']
         verbose_name = 'Account'
         verbose_name_plural = 'Accounts'
+
+    def save(self, *args, **kwargs):
+        if not self.account_number:
+            random_digits = ''.join([str(random.randint(0, 9)) for _ in range(14)])
+            self.account_number = f"UA{random_digits}"
+        super().save(*args, **kwargs)
 
 
 class Transaction(models.Model):

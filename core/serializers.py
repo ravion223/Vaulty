@@ -7,6 +7,7 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = '__all__'
+        read_only_fields = ['account_number', 'balance', 'created_at']
 
     def get_client_name(self, obj):
         return f"{obj.client.first_name} {obj.client.last_name}"

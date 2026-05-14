@@ -49,9 +49,8 @@ const AddAccountModal = ({ isOpen, onClose, onAdd }) => {
                 setIsSearching(false);
             }
         };
-        const timeoutId = setTimeout(() => {
-            fetchClients()
-        }, 500);
+        const timeoutId = setTimeout(fetchClients, 500);
+        return () => clearTimeout(timeoutId);
     }, [searchQuery]);
 
     const onSubmit = async (data) => {

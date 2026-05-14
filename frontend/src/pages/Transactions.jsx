@@ -3,6 +3,7 @@ import apiClient from "../api/client"
 import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
 import { FiSearch, FiAlertCircle, FiFilter, FiCheck, FiFlag } from "react-icons/fi";
+import AddTransactionModal from "../../components/AddTransactionModal"
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -16,6 +17,7 @@ const Transactions = () => {
     const[statusFilter, setStatusFilter] = useState("");
 
     const[searchQuery, setSearchQuery] = useState("");
+    const[isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -82,12 +84,30 @@ const Transactions = () => {
         setPage(1);
     }
 
+    const handleAddTransaction = async (data) => {
+        try {
+            const response = await apiClient.post('transactions/', data);
+            setTransactions((prev) => [response.data, ...prev]);
+        } catch (error) {
+            console.error('Failed to create transaction: ', error);
+            throw error;
+        }
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
-                <h2>
-                    Bank transactions
-                </h2>
+                <div className="flex items-center gap-2">
+                    <h2>
+                        Bank transactions
+                    </h2>
+                    <button
+                            onClick={() => setIsAddModalOpen(true)}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap"
+                        >
+                            + New transaction
+                    </button>
+                </div>
                 <div className="relative w-full sm:w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <FiSearch className="text-mauve-400" />
@@ -248,6 +268,11 @@ const Transactions = () => {
                     )}
                 </div>
             )}
+            <AddTransactionModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onAdd={handleAddTransaction}
+            />
         </div>
     )
 }

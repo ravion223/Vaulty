@@ -39,6 +39,11 @@ class TransactionSerializer(serializers.ModelSerializer):
         return f"{obj.receiver.client.first_name} {obj.receiver.client.last_name}"
     
     def validate(self, data):
+        # if request is patch
+        
+        if self.instance:
+            return data
+
         sender = data['sender']
         receiver = data['receiver']
         amount = data['amount']
@@ -75,6 +80,6 @@ class TransactionSerializer(serializers.ModelSerializer):
             receiver.balance += amount
             receiver.save()
 
-            validated_data['status'] = Transaction.status.COMPLETED
+            validated_data['status'] = Transaction.Status.COMPLETED
 
             return super().create(validated_data)

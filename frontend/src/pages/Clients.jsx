@@ -19,10 +19,12 @@ const Clients = () => {
 
     const [searchQuery, setSearchQuery] = useState("");
     
-    const[isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-    const[isKycModalOpen, setIsKycModalOpen] = useState(false);
-    const[selectedClientForKyc, setSelectedClientForKyc] = useState(null);
+    const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+    const [selectedClientForKyc, setSelectedClientForKyc] = useState(null);
+
+    const [kycStatusFilter, setKycStatusFilter] = useState("");
 
     useEffect(() =>{
         const fetchClients = async () => {
@@ -35,6 +37,10 @@ const Clients = () => {
                 
                 if (searchQuery){
                     url += `&search=${searchQuery}`;
+                }
+
+                if (kycStatusFilter){
+                    url += `&kyc_status=${kycStatusFilter}`
                 }
                 const response = await apiClient.get(url);
                 setClients(response.data.results);
@@ -53,12 +59,17 @@ const Clients = () => {
         }, 500);
 
         return () => clearTimeout(delayDebounceFn)
-    }, [page, riskFilter, searchQuery]);
+    }, [page, riskFilter, searchQuery, kycStatusFilter]);
 
     const handleRiskFilter = (e) => {
         setRiskFilter(e.target.value);
         setPage(1);
     };
+
+    const handleKycStatusFilter = (e) => {
+        setKycStatusFilter(e.target.value);
+        setPage(1);
+    }
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -117,8 +128,8 @@ const Clients = () => {
                     </button>
                 </div>
                 
-                <div className='flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto'>
-                    <div className="relative w-full sm:w-72">
+                
+                <div className="relative w-full sm:w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <FiSearch className="text-mauve-400" />
                     </div>
@@ -130,22 +141,37 @@ const Clients = () => {
                         className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                     </div>
-                    <div className="flex gap-2 items-center">
-                        <FiFilter className="text-mauve-500" />
-                        <span className="text-sm font-medium text-mauve-600">Risk:</span>
-                        <select
-                        value={riskFilter}
-                        onChange={handleRiskFilter}
-                        className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
-                            <option value="">All</option>
-                            <option value="LOW">Low</option>
-                            <option value="MEDIUM">Medium</option>
-                            <option value="HIGH">High</option>
-                        </select>
+                    <div className='flex items-center gap-2'>
+                        <div className="flex gap-2 items-center">
+                            <FiFilter className="text-mauve-500" />
+                            <span className="text-sm font-medium text-mauve-600">Risk:</span>
+                            <select
+                            value={riskFilter}
+                            onChange={handleRiskFilter}
+                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
+                                <option value="">All</option>
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM">Medium</option>
+                                <option value="HIGH">High</option>
+                            </select>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <FiFilter className="text-mauve-500" />
+                            <span className="text-sm font-medium text-mauve-600">Kyc status:</span>
+                            <select
+                            value={kycStatusFilter}
+                            onChange={handleKycStatusFilter}
+                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
+                                <option value="">All</option>
+                                <option value="REJECTED">Rejected</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="APPROVED">Approved</option>
+                            </select>
+                        </div>
                     </div>
+                    
                 </div>
                 
-            </div>
             {loading && (
                 <div className="text-mauve-500">
                     Loading clients data...

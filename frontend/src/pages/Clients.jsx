@@ -3,6 +3,8 @@ import { FiFilter } from "react-icons/fi";
 import apiClient from '../api/client';
 import { FiSearch } from "react-icons/fi"
 import AddClientModal from '../../components/AddClientModal';
+import { IoIosSettings } from "react-icons/io";
+import EditKycModal from '../../components/EditKycModal';
 
 // add pagination
 const Clients = () => {
@@ -17,7 +19,12 @@ const Clients = () => {
 
     const [searchQuery, setSearchQuery] = useState("");
     
-    const[isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+    const [selectedClientForKyc, setSelectedClientForKyc] = useState(null);
+
+    const [kycStatusFilter, setKycStatusFilter] = useState("");
 
     useEffect(() =>{
         const fetchClients = async () => {
@@ -30,6 +37,10 @@ const Clients = () => {
                 
                 if (searchQuery){
                     url += `&search=${searchQuery}`;
+                }
+
+                if (kycStatusFilter){
+                    url += `&kyc_status=${kycStatusFilter}`
                 }
                 const response = await apiClient.get(url);
                 setClients(response.data.results);
@@ -48,12 +59,17 @@ const Clients = () => {
         }, 500);
 
         return () => clearTimeout(delayDebounceFn)
-    }, [page, riskFilter, searchQuery]);
+    }, [page, riskFilter, searchQuery, kycStatusFilter]);
 
     const handleRiskFilter = (e) => {
         setRiskFilter(e.target.value);
         setPage(1);
     };
+
+    const handleKycStatusFilter = (e) => {
+        setKycStatusFilter(e.target.value);
+        setPage(1);
+    }
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -87,6 +103,15 @@ const Clients = () => {
         }
     }
 
+    const updateKycStatus = async (clientId, newStatus) => {
+        await apiClient.patch(`clients/${clientId}/`, { kyc_status: newStatus });
+        setClients((prev) => 
+            prev.map((client) => 
+                client.id === clientId ? { ...client, kyc_status: newStatus } : client
+            )
+        )
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
@@ -103,8 +128,8 @@ const Clients = () => {
                     </button>
                 </div>
                 
-                <div className='flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto'>
-                    <div className="relative w-full sm:w-72">
+                
+                <div className="relative w-full sm:w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <FiSearch className="text-mauve-400" />
                     </div>
@@ -116,22 +141,37 @@ const Clients = () => {
                         className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                     </div>
-                    <div className="flex gap-2 items-center">
-                        <FiFilter className="text-mauve-500" />
-                        <span className="text-sm font-medium text-mauve-600">Risk:</span>
-                        <select
-                        value={riskFilter}
-                        onChange={handleRiskFilter}
-                        className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
-                            <option value="">All</option>
-                            <option value="LOW">Low</option>
-                            <option value="MEDIUM">Medium</option>
-                            <option value="HIGH">High</option>
-                        </select>
+                    <div className='flex items-center gap-2'>
+                        <div className="flex gap-2 items-center">
+                            <FiFilter className="text-mauve-500" />
+                            <span className="text-sm font-medium text-mauve-600">Risk:</span>
+                            <select
+                            value={riskFilter}
+                            onChange={handleRiskFilter}
+                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
+                                <option value="">All</option>
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM">Medium</option>
+                                <option value="HIGH">High</option>
+                            </select>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <FiFilter className="text-mauve-500" />
+                            <span className="text-sm font-medium text-mauve-600">Kyc status:</span>
+                            <select
+                            value={kycStatusFilter}
+                            onChange={handleKycStatusFilter}
+                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
+                                <option value="">All</option>
+                                <option value="REJECTED">Rejected</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="APPROVED">Approved</option>
+                            </select>
+                        </div>
                     </div>
+                    
                 </div>
                 
-            </div>
             {loading && (
                 <div className="text-mauve-500">
                     Loading clients data...
@@ -154,49 +194,77 @@ const Clients = () => {
                 <div>
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-mauve-200 text-mauve-500">
-                                <th className="pb-3 font-mono">Name and surname</th>
-                                <th className="pl-1 pb-3 font-mono">Email</th>
-                                <th className="pl-1 pb-3 font-mono">Risk</th>
-                                <th className="pl-1 pb-3 font-mono">Accounts count</th>
-                                <th className="pl-1 pb-3 font-mono">Actions</th>
+                            <tr className="border-b border-mauve-200 text-mauve-500 text-sm">
+                                <th className="pb-3 font-mono">Client Info</th>
+                                <th className="pl-1 pb-3 font-mono">Contact & Tax</th>
+                                <th className="pl-1 pb-3 font-mono">KYC Status</th>
+                                <th className="pl-1 pb-3 font-mono">Risk level</th>
+                                <th className="pl-1 pb-3 font-mono">Accounts</th>
                             </tr>
                         </thead>
                         <tbody>
                             {clients.map((client) =>(
                                 <tr key={client.id} className="border-b border-mauve-200 hover:bg-mauve-100 transition duration-250">
-                                    <td className="py-3 text-mauve-800 font-medium">
-                                        {client.first_name} {client.last_name}
-                                    </td>
-                                    <td className="pl-1 text-mauve-60">{client.email}</td>
-                                    <td className="py-3">
-                                        <div className="pl-">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                                client.risk_level === "HIGH" ?
-                                                'bg-red-100 text-red-700' : client.risk_level === "MEDIUM" ?
-                                                'bg-amber-100 text-amber-700' :
-                                                'bg-emerald-100 text-emerald-700'}`}>
-                                                {client.risk_level}
-                                            </span>
+                                    <td className="py-3 pr-4">
+                                        <div className="font-semibold text-mauve-900">
+                                            {client.first_name} {client.last_name}
+                                        </div>
+                                        <div className="text-xs text-mauve-500 mt-0.5">
+                                            {client.email}
                                         </div>
                                     </td>
-                                    <td className="pl-1">{client.accounts.length}</td>
-                                    <td>
-                                        <select
-                                        value={client.risk_level}
-                                        onChange={(e) => updateRiskLevel(client.id, e.target.value)}
-                                        className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors cursor-pointer outline-none ${
-                                            client.risk_level === "HIGH"
-                                            ? "bg-red-50 text-red-700 border-red-200"
-                                            : client.risk_level === "MEDIUM"
-                                            ? "bg-amber-50 text-amber-700 border-amber-200"
-                                            : "bg-white text-mauve-500 border-mauve-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition duration-200"
-                                        }`}
-                                        >
-                                            <option value="LOW">Low</option>
-                                            <option value="MEDIUM">Medium</option>
-                                            <option value="HIGH">High</option>
-                                        </select>
+                                    <td className="pl-1 text-mauve-60">
+                                        <div className="text-sm text-mauve-800 font-medium">
+                                            {client.phone_number || "No phone"}
+                                        </div>
+                                        <div className="text-xs text-mauve-500 mt-0.5">
+                                            TIN: {client.tax_number || "N/A"}
+                                        </div>
+                                    </td>
+                                    <td className="py-3 pl-1 pr-4">
+                                        <div className='flex items-center gap-1'>
+                                            <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
+                                                client.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
+                                                client.kyc_status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
+                                                'bg-red-100 text-red-700'
+                                            }`}>
+                                                {client.kyc_status || 'PENDING'}
+                                            </span>
+                                            <button
+                                                onClick={() => { 
+                                                    setSelectedClientForKyc(client);
+                                                    setIsKycModalOpen(true); 
+                                                }}
+                                                className='text-gray-600 text-lg'
+                                            >
+                                                <IoIosSettings />
+                                            </button>
+                                        </div>
+                                        
+                                    </td>
+                                    <td className="py-3 pl-1 pr-4">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-2 h-2 rounded-full ${
+                                                client.risk_level === 'HIGH' ? 'bg-red-500' :
+                                                client.risk_level === 'MEDIUM' ? 'bg-amber-500' :
+                                                'bg-emerald-500'
+                                            }`}></div>
+                                            
+                                            <select
+                                                value={client.risk_level}
+                                                onChange={(e) => updateRiskLevel(client.id, e.target.value)}
+                                                className="bg-transparent text-sm font-medium text-mauve-700 cursor-pointer outline-none hover:text-blue-600 transition-colors"
+                                            >
+                                                <option value="LOW">Low</option>
+                                                <option value="MEDIUM">Medium</option>
+                                                <option value="HIGH">High</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td className="py-3 pl-1">
+                                        <span className="text-sm font-medium text-mauve-600 bg-white border border-mauve-200 px-2 py-1 rounded-md">
+                                            {client.accounts?.length || 0}
+                                        </span>
                                     </td>
                                 </tr>
                             ))}
@@ -229,6 +297,12 @@ const Clients = () => {
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddClient} 
+            />
+            <EditKycModal
+                isOpen={isKycModalOpen}
+                onClose={() => setIsKycModalOpen(false)}
+                client={selectedClientForKyc}
+                onUpdate={updateKycStatus}
             />
         </div>
     )

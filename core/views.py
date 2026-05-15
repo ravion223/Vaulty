@@ -26,6 +26,10 @@ class ClientViewSet(viewsets.ModelViewSet):
         if risk:
             queryset = queryset.filter(risk_level=risk)
 
+        kyc_status = self.request.query_params.get('kyc_status', None)
+        if kyc_status:
+            queryset = queryset.filter(kyc_status=kyc_status)
+
         return queryset
     
 

@@ -3,6 +3,8 @@ import { FiFilter } from "react-icons/fi";
 import apiClient from '../api/client';
 import { FiSearch } from "react-icons/fi"
 import AddClientModal from '../../components/AddClientModal';
+import { IoIosSettings } from "react-icons/io";
+import EditKycModal from '../../components/EditKycModal';
 
 // add pagination
 const Clients = () => {
@@ -18,6 +20,9 @@ const Clients = () => {
     const [searchQuery, setSearchQuery] = useState("");
     
     const[isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    const[isKycModalOpen, setIsKycModalOpen] = useState(false);
+    const[selectedClientForKyc, setSelectedClientForKyc] = useState(null);
 
     useEffect(() =>{
         const fetchClients = async () => {
@@ -85,6 +90,15 @@ const Clients = () => {
             // returns error to where function was called
             throw error;
         }
+    }
+
+    const updateKycStatus = async (clientId, newStatus) => {
+        await apiClient.patch(`clients/${clientId}/`, { kyc_status: newStatus });
+        setClients((prev) => 
+            prev.map((client) => 
+                client.id === clientId ? { ...client, kyc_status: newStatus } : client
+            )
+        )
     }
 
     return (
@@ -182,13 +196,25 @@ const Clients = () => {
                                         </div>
                                     </td>
                                     <td className="py-3 pl-1 pr-4">
-                                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
-                                            client.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
-                                            client.kyc_status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
-                                            'bg-red-100 text-red-700'
-                                        }`}>
-                                            {client.kyc_status || 'PENDING'}
-                                        </span>
+                                        <div className='flex items-center gap-1'>
+                                            <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
+                                                client.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
+                                                client.kyc_status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
+                                                'bg-red-100 text-red-700'
+                                            }`}>
+                                                {client.kyc_status || 'PENDING'}
+                                            </span>
+                                            <button
+                                                onClick={() => { 
+                                                    setSelectedClientForKyc(client);
+                                                    setIsKycModalOpen(true); 
+                                                }}
+                                                className='text-gray-600 text-lg'
+                                            >
+                                                <IoIosSettings />
+                                            </button>
+                                        </div>
+                                        
                                     </td>
                                     <td className="py-3 pl-1 pr-4">
                                         <div className="flex items-center gap-2">
@@ -245,6 +271,12 @@ const Clients = () => {
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddClient} 
+            />
+            <EditKycModal
+                isOpen={isKycModalOpen}
+                onClose={() => setIsKycModalOpen(false)}
+                client={selectedClientForKyc}
+                onUpdate={updateKycStatus}
             />
         </div>
     )

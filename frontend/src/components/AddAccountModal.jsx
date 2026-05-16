@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { FiSearch, FiX } from 'react-icons/fi';
-import apiClient from '../src/api/client';
+import apiClient from '../api/client';
 
 const accountSchema = z.object({
     client: z.string().min(1, "Please select a client"),

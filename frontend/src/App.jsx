@@ -10,7 +10,7 @@ import Accounts from "./pages/Accounts"
 import Dashboard from "./pages/Dashboard"
 import Transactions from "./pages/Transactions"
 import LoginPage from "./pages/LoginPage"
-import PrivateRoute from "../components/PrivateRoute"
+import PrivateRoute from "../src/components/PrivateRoute"
 
 function App() {
   return (

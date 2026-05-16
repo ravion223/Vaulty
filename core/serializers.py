@@ -26,6 +26,7 @@ class ClientSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     sender_name = serializers.SerializerMethodField()
     receiver_name = serializers.SerializerMethodField()
+    currency = serializers.CharField(source='sender.currency', read_only=True)
 
     class Meta:
         model = Transaction

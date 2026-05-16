@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { FiX, FiSearch } from 'react-icons/fi';
-import apiClient from '../src/api/client'
+import apiClient from '../api/client'
 
 const transactionSchema = z.object({
     sender: z.coerce.string().min(1, "Please select sender account"),

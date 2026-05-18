@@ -86,30 +86,46 @@ class DashboardStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        total_balance = Account.objects.aggregate(total=Sum('balance'))['total'] or 0
+        currency = self.request.query_params.get('currency', 'USD')
 
-        active_clients = Client.objects.count()
+        total_balance = Account.objects.filter(currency=currency).aggregate(total=Sum('balance'))['total'] or 0
 
-        flagged_tx = Transaction.objects.filter(is_flagged=True).count()
+        active_clients = Client.objects.filter(accounts__currency=currency).distinct().count()
+
+        flagged_tx = Transaction.objects.filter(
+            is_flagged=True,
+            sender__currency=currency
+        ).count()
 
         today = timezone.now().date()
         last_7_days = today - timedelta(days=6)
-        tx_7_days = Transaction.objects.filter(timestamp__gte=last_7_days).count()
 
-        daily_stats = Transaction.objects.filter(timestamp__gte=last_7_days)\
-            .annotate(day=TruncDate('timestamp'))\
-            .values('day')\
-            .annotate(total=Sum('amount'))\
-            .order_by('day')
+        tx_7_days = Transaction.objects.filter(
+            sender__currency=currency,
+            timestamp__date__gte=last_7_days
+        ).count()
+
+        daily_stats = Transaction.objects.filter(
+            sender__currency = currency,
+            status="COMPLETED",
+            timestamp__date__gte=last_7_days
+        ).annotate(
+            day=TruncDate('timestamp')
+        ).values('day').annotate(
+            total=Sum('amount')
+        ).order_by('day')
         
         stats_dict = {item['day']: item['total'] for item in daily_stats}
 
         chart_data = []
-        for i in range(7):
-            current_day = last_7_days + timedelta(days=i)
+        for i in range(6, -1, -1):
+            current_day = today - timedelta(days=i)
+
+            day_volume = stats_dict.get(current_day, 0)
+
             chart_data.append({
                 "name": current_day.strftime("%a"),
-                "balance": stats_dict.get(current_day, 0)
+                "balance": float(day_volume)
             })
 
         return Response({

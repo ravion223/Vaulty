@@ -102,7 +102,7 @@ class DashboardStatsView(APIView):
 
         tx_7_days = Transaction.objects.filter(
             sender__currency=currency,
-            timestamp__gte=last_7_days
+            timestamp__date__gte=last_7_days
         ).count()
 
         daily_stats = Transaction.objects.filter(

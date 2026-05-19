@@ -1,8 +1,11 @@
+import csv
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from django.db.models import Count, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
@@ -81,6 +84,28 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @action(detail=False, methods=['get'])
+    def export_csv(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="transactions_report.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['Transaction ID', 'Sender Account', 'Receiver Account', 'Amount', 'Status', 'Date', 'Flagged'])
+
+        for tx in queryset:
+            writer.writerow([
+                f"TRX-{str(tx.id)[:8]}",
+                f"{tx.sender.client.first_name} {tx.sender.client.last_name}",
+                f"{tx.receiver.client.first_name} {tx.receiver.client.last_name}",
+                tx.amount,
+                tx.status,
+                tx.timestamp.strftime('%Y-%m-%d %H: %M: %S'),
+                'Yes' if tx.is_flagged else 'No'
+            ])
+        
+        return response
 
 class DashboardStatsView(APIView):
     permission_classes = [IsAuthenticated]

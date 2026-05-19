@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import apiClient from "../api/client"
 import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
-import { FiSearch, FiAlertCircle, FiFilter, FiCheck, FiFlag } from "react-icons/fi";
+import { FiSearch, FiAlertCircle, FiFilter, FiCheck, FiFlag, FiDownload } from "react-icons/fi";
 import AddTransactionModal from "../components/AddTransactionModal"
 import Table from "../components/Table";
 
@@ -207,10 +207,34 @@ const Transactions = () => {
         ).format(amount);
     }
 
+    const handleExportCSV = async () => {
+        try {
+            const response = await apiClient.get('/transactions/export_csv/', {
+                responseType: 'blob' // binary
+            });
+
+            const blob = new Blob([response.data], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `transactions_report_${new Date().toISOString().slice(0, 10)}.csv`);
+
+            document.body.appendChild(link);
+            link.click();
+
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.log("Couldn't download csv: ", error);
+            alert("Something went wrong when downloading csv...");
+        }
+    }
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col">
                     <h2>
                         Bank transactions
                     </h2>
@@ -260,6 +284,13 @@ const Transactions = () => {
                     >
                         <FiFilter size={16} />
                         {filterFlagged ? "Show all" : "Only flagged"}
+                    </button>
+                    <button
+                        onClick={handleExportCSV}
+                        disabled={loading || transactions.length === 0}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <FiDownload size={16} />
                     </button>
                 </div>
             </div>

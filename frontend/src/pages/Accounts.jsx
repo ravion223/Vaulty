@@ -206,7 +206,7 @@ const Accounts = () => {
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col">
                     <h2 className="text-2xl font-bold text-mauve-900 font-stretch-expanded">
                         Bank accounts
                     </h2>

@@ -208,7 +208,7 @@ const Clients = () => {
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
             <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
-                <div className='flex items-center gap-3'>
+                <div className='flex flex-col'>
                     <h2 className="font-stretch-expanded">
                         Bank clients
                     </h2>

@@ -25,12 +25,15 @@ const LoginPage = () => {
                 username, password
             });
 
-            const { access, refresh } = response.data;
+            const { access, refresh, role_name, permissions } = response.data;
 
             localStorage.setItem('access_token', access);
             localStorage.setItem('refresh_token', refresh);
             
-            localStorage.setItem('username', username)
+            localStorage.setItem('username', username);
+
+            localStorage.setItem('role_name', role_name);
+            localStorage.setItem('permissions', permissions); 
 
             navigate('/dashboard');
         } catch(error) {

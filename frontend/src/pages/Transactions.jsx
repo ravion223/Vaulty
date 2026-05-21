@@ -5,6 +5,7 @@ import { GoDash } from "react-icons/go";
 import { FiSearch, FiAlertCircle, FiFilter, FiCheck, FiFlag, FiDownload } from "react-icons/fi";
 import AddTransactionModal from "../components/AddTransactionModal"
 import Table from "../components/Table";
+import AccessGuard from "../components/AccessGuard";
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -285,13 +286,15 @@ const Transactions = () => {
                         <FiFilter size={16} />
                         {filterFlagged ? "Show all" : "Only flagged"}
                     </button>
-                    <button
-                        onClick={handleExportCSV}
-                        disabled={loading || transactions.length === 0}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <FiDownload size={16} />
-                    </button>
+                    <AccessGuard permission="export_reports">
+                        <button
+                            onClick={handleExportCSV}
+                            disabled={loading || transactions.length === 0}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <FiDownload size={16} />
+                        </button>
+                    </AccessGuard>
                 </div>
             </div>
             <div>

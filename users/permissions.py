@@ -8,4 +8,7 @@ class HasPermission(permissions.BasePermission):
         if not request.user.is_authenticated or not request.user.role:
             return False
         
-        return request.user.role.permissions.filter(name=self.required_permission)
+        if request.user.is_superuser or (request.user.role and request.user.role.name == "Super Admin"):
+            return True
+        
+        return request.user.role.permissions.filter(name=self.required_permission).exists()

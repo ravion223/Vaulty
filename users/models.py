@@ -12,8 +12,8 @@ class Permission(models.Model):
     
     class Meta:
         ordering = ['name']
-        verbose_name = ['Permission']
-        verbose_name_plural = ['Permissions']
+        verbose_name = 'Permission'
+        verbose_name_plural = 'Permissions'
     
 
 class Role(models.Model):
@@ -25,8 +25,8 @@ class Role(models.Model):
     
     class Meta:
         ordering = ['name']
-        verbose_name = ['Role']
-        verbose_name_plural = ['Roles']
+        verbose_name = 'Role'
+        verbose_name_plural = 'Roles'
     
 
 class User(AbstractUser):

@@ -4,6 +4,7 @@ import { FiAlertCircle, FiFilter, FiSearch } from "react-icons/fi";
 import { FaCircleCheck, FaFlag } from "react-icons/fa6";
 import AddAccountModal from '../components/AddAccountModal';
 import Table from '../components/Table';
+import AccessGuard from '../components/AccessGuard';
 
 const Accounts = () => {
     const[accounts, setAccounts] = useState([]);
@@ -21,6 +22,9 @@ const Accounts = () => {
 
     const[isAddModalOpen, setIsAddModalOpen] = useState(false);
     const[clientsList, setClientsList] = useState([]);
+
+    const role = localStorage.getItem('role_name');
+    const permissions = JSON.parse(localStorage.getItem('permissions') || "[]");
 
     const columns = [
         {
@@ -90,20 +94,29 @@ const Accounts = () => {
             className: '',
             render: (account) => (
                 <>
-                    <button
-                        onClick={() => toggleAccountStatus(account.id, account.status)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                            account.status === "ACTIVE" 
-                            ? "bg-white text-mauve-400 border-mauve-200 hover:bg-cyan-50 hover:text-cyan-600 border hover:border-cyan-200" 
-                            : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"
-                        }`}
-                    >
-                        { account.status === "ACTIVE" ? "Freeze" : "Activate" }
-                    </button>
+                    <AccessGuard permission="freeze_account">
+                        <button
+                            onClick={() => toggleAccountStatus(account.id, account.status)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                                account.status === "ACTIVE" 
+                                ? "bg-white text-mauve-400 border-mauve-200 hover:bg-cyan-50 hover:text-cyan-600 border hover:border-cyan-200" 
+                                : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"
+                            }`}
+                        >
+                            { account.status === "ACTIVE" ? "Freeze" : "Activate" }
+                        </button>
+                    </AccessGuard>
                 </>
             )
         }
     ]
+
+    const getVisibleColumns = () => {
+        if (role === 'Super Admin' || permissions.includes('freeze_account')) {
+            return columns;
+        }
+        return columns.filter(col => col.header != 'Actions');
+    }
 
     useEffect(() => {
         const fetchClients = async () => {
@@ -261,7 +274,7 @@ const Accounts = () => {
             </div>
                 <div>
                     <Table 
-                        columns={columns} 
+                        columns={getVisibleColumns()} 
                         data={accounts} 
                         loading={loading}
                         page={page}

@@ -5,11 +5,14 @@ import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const navigate = useNavigate();
   const username = localStorage.getItem("username")
+  const role = localStorage.getItem("role_name")
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('username');
+    localStorage.removeItem('role_name');
+    localStorage.removeItem('permissions');
 
     navigate('/login');
   }
@@ -20,7 +23,7 @@ const Header = () => {
       <div className="flex items-center space-x-4">
         <div className="flex items-center gap-2">
           <FaUserTie />
-          <span className="text-sm font-medium text-mauve-600"> {username}</span>
+          <span className="text-sm font-medium text-mauve-600"> {username} ({role})</span>
         </div>
         <button 
         onClick={handleLogout}

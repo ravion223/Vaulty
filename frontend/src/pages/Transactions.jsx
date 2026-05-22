@@ -5,6 +5,7 @@ import { GoDash } from "react-icons/go";
 import { FiSearch, FiAlertCircle, FiFilter, FiCheck, FiFlag, FiDownload } from "react-icons/fi";
 import AddTransactionModal from "../components/AddTransactionModal"
 import Table from "../components/Table";
+import AccessGuard from "../components/AccessGuard";
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -19,6 +20,9 @@ const Transactions = () => {
 
     const[searchQuery, setSearchQuery] = useState("");
     const[isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    const role = localStorage.getItem('role_name');
+    const storedPermissions = JSON.parse(localStorage.getItem('permissions') || "[]");
 
     const columns = [
         {
@@ -96,29 +100,38 @@ const Transactions = () => {
             className: "pl-1 text-center",
             render: (transaction) => (
                 <>
-                    <button
-                        onClick={() => toggleFlagTransaction(transaction.id, transaction.is_flagged)}
-                        className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
-                        transaction.is_flagged 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 shadow-sm"
-                            : "bg-white text-mauve-500 border-mauve-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-                        }`}
-                    >
-                        {transaction.is_flagged ? (
-                        <>
-                            <FiCheck size={14} /> Resolve
-                        </>
-                        ) : (
-                        <>
-                            <FiFlag size={14} /> Report
-                        </>
-                        )}
-                    </button>
+                    <AccessGuard permission="flag_transaction">
+                        <button
+                            onClick={() => toggleFlagTransaction(transaction.id, transaction.is_flagged)}
+                            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+                            transaction.is_flagged 
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 shadow-sm"
+                                : "bg-white text-mauve-500 border-mauve-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                            }`}
+                        >
+                            {transaction.is_flagged ? (
+                            <>
+                                <FiCheck size={14} /> Resolve
+                            </>
+                            ) : (
+                            <>
+                                <FiFlag size={14} /> Report
+                            </>
+                            )}
+                        </button>
+                    </AccessGuard>
                 </>
             )
         }
 
     ]
+
+    const getVisibleColumns = () => {
+        if (role === "Super Admin" || storedPermissions.includes('flag_transaction')){
+            return columns;
+        }
+        return columns.filter(col => col.header != "Actions");
+    }
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -239,12 +252,14 @@ const Transactions = () => {
                         Bank transactions
                     </h2>
                     {!loading && transactions.length !== 0 && (
-                        <button
-                            onClick={() => setIsAddModalOpen(true)}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap"
-                        >
-                            + New transaction
-                        </button>
+                        <AccessGuard permission="create_transaction">
+                            <button
+                                onClick={() => setIsAddModalOpen(true)}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap"
+                            >
+                                + New transaction
+                            </button>
+                        </AccessGuard>
                     )}
                     
                 </div>
@@ -285,18 +300,20 @@ const Transactions = () => {
                         <FiFilter size={16} />
                         {filterFlagged ? "Show all" : "Only flagged"}
                     </button>
-                    <button
-                        onClick={handleExportCSV}
-                        disabled={loading || transactions.length === 0}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <FiDownload size={16} />
-                    </button>
+                    <AccessGuard permission="export_reports">
+                        <button
+                            onClick={handleExportCSV}
+                            disabled={loading || transactions.length === 0}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <FiDownload size={16} />
+                        </button>
+                    </AccessGuard>
                 </div>
             </div>
             <div>
                 <Table
-                    columns={columns}
+                    columns={getVisibleColumns()}
                     data={transactions}
                     loading={loading}
                     page={page}

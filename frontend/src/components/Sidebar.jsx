@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import AccessGuard from "./AccessGuard";
 
 const Sidebar = () => {
     const navLinkClass = ({ isActive }) =>
@@ -18,9 +19,13 @@ const Sidebar = () => {
 
             <nav className="flex-1 p-4 space-y-2">
                 <NavLink to="/" className={navLinkClass}>Dashboard</NavLink>
-                <NavLink to="/clients" className={navLinkClass}>Clients</NavLink>
+                <AccessGuard permission="view_clients">
+                    <NavLink to="/clients" className={navLinkClass}>Clients</NavLink>
+                </AccessGuard>
                 <NavLink to="/accounts" className={navLinkClass}>Accounts</NavLink>
-                <NavLink to="/transactions" className={navLinkClass}>Transactions</NavLink>
+                <AccessGuard permission="view_transactions">
+                    <NavLink to="/transactions" className={navLinkClass}>Transactions</NavLink>
+                </AccessGuard>
             </nav>
         </aside>
     )

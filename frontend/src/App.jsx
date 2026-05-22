@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard"
 import Transactions from "./pages/Transactions"
 import LoginPage from "./pages/LoginPage"
 import PrivateRoute from "../src/components/PrivateRoute"
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -23,9 +24,17 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="clients" element={<Clients /> } />
+            <Route path="clients" element={
+              <ProtectedRoute permission="view_clients">
+                <Clients />
+              </ProtectedRoute>
+            } />
             <Route path="accounts" element={<Accounts />} />
-            <Route path="transactions" element={<Transactions />} />
+            <Route path="transactions" element={
+              <ProtectedRoute permission="view_transactions">
+                <Transactions />
+              </ProtectedRoute>
+            } />
           </Route>
           
         </Route>

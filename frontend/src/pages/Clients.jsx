@@ -6,6 +6,7 @@ import AddClientModal from '../components/AddClientModal';
 import { IoIosSettings } from "react-icons/io";
 import EditKycModal from '../components/EditKycModal';
 import Table from '../components/Table';
+import AccessGuard from '../components/AccessGuard';
 
 // add pagination
 const Clients = () => {
@@ -69,15 +70,17 @@ const Clients = () => {
                         }`}>
                             {client.kyc_status || 'PENDING'}
                         </span>
-                        <button
-                            onClick={() => { 
-                                setSelectedClientForKyc(client);
-                                setIsKycModalOpen(true); 
-                            }}
-                            className='text-gray-600 text-lg'
-                        >
-                            <IoIosSettings />
-                        </button>
+                        <AccessGuard permission="edit_kyc_status">
+                            <button
+                                onClick={() => { 
+                                    setSelectedClientForKyc(client);
+                                    setIsKycModalOpen(true); 
+                                }}
+                                className='text-gray-600 text-lg'
+                            >
+                                <IoIosSettings />
+                            </button>
+                        </AccessGuard>
                     </div>
                 </>
             )
@@ -213,12 +216,14 @@ const Clients = () => {
                         Bank clients
                     </h2>
                     {!loading && clients.length !== 0 && (
-                        <button
-                            onClick={() => setIsAddModalOpen(true)}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-500"
-                        >
-                            + Add Client
-                        </button>
+                        <AccessGuard permission="create_client">
+                            <button
+                                onClick={() => setIsAddModalOpen(true)}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-500"
+                            >
+                                + Add Client
+                            </button>
+                        </AccessGuard>
                     )}
                     
                 </div>

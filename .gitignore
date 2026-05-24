@@ -220,3 +220,7 @@ __marimo__/
 # Big data files
 transactions_20M.csv
 accounts.txt
+*.log
+*.parquet
+*.db
+*.csv

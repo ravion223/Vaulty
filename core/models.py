@@ -151,3 +151,25 @@ class Transaction(models.Model):
         ordering = ['-timestamp']
         verbose_name = 'Transaction'
         verbose_name_plural = 'Transactions'
+
+
+# For analytics
+
+class FlaggedTransaction(models.Model):
+    transaction_id = models.CharField(max_length=50, primary_key=True)
+    account_from = models.CharField(max_length=50)
+    account_to = models.CharField(max_length=50)
+    amount = models.DecimalField(max_digits=15, decimal_places=2)
+    timestamp = models.DateTimeField()
+    status = models.CharField(max_length=20)
+    is_flagged = models.BooleanField()
+    processed_at = models.DateTimeField()
+
+    class Meta:
+        managed = False 
+        db_table = 'core_transaction_flagged'
+        verbose_name = 'Flagged Transaction'
+        verbose_name_plural = 'Flagged Transactions'
+
+    def __str__(self):
+        return f"{self.transaction_id} - {self.amount}"

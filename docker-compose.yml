@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  spark-env:
+    image: jupyter/pyspark-notebook:latest
+    container_name: vaulty-pyspark
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - GRANT_SUDO=yes
+    user: root

@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Big data files
+transactions_20M.csv
+accounts.txt
+*.log
+*.parquet
+*.db
+*.csv

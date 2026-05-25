@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Transaction, Account
+from .models import Client, Transaction, Account, FlaggedTransaction
 
 # Register your models here.
 
@@ -20,3 +20,13 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'sender', 'receiver', 'amount', 'status', 'is_flagged', 'timestamp')
     list_filter = ('status', 'is_flagged', 'timestamp')
     search_fields = ('id', 'sender__account_number', 'receiver__account_number')
+
+@admin.register(FlaggedTransaction)
+class FlaggedTransactionAdmin(admin.ModelAdmin):
+    list_display = ('transaction_id', 'account_from', 'amount', 'status', 'processed_at')
+    search_fields = ('transaction_id', 'account_from')
+    list_filter = ('status', 'is_flagged')
+    
+    def has_add_permission(self, request): return False
+    def has_change_permission(self, request, obj=None): return False
+    def has_delete_permission(self, request, obj=None): return False

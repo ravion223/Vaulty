@@ -7,7 +7,7 @@ import './App.css'
 import MainLayout from "../layots/MainLayout"
 import Clients from "./pages/Clients"
 import Accounts from "./pages/Accounts"
-import Dashboard from "./pages/Dashboard"
+import DashboardPage from "./pages/DashboardPage"
 import Transactions from "./pages/Transactions"
 import LoginPage from "./pages/LoginPage"
 import PrivateRoute from "../src/components/PrivateRoute"
@@ -23,7 +23,7 @@ function App() {
 
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="dashboard" element={<DashboardPage />} />
             <Route path="clients" element={
               <ProtectedRoute permission="view_clients">
                 <Clients />

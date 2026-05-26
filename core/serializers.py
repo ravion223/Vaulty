@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.db import transaction
-from .models import Client, Account, Transaction
+from .models import Client, Account, Transaction, FlaggedTransaction
 
 class AccountSerializer(serializers.ModelSerializer):
     client_name = serializers.SerializerMethodField()
@@ -84,3 +84,9 @@ class TransactionSerializer(serializers.ModelSerializer):
             validated_data['status'] = Transaction.Status.COMPLETED
 
             return super().create(validated_data)
+        
+
+class FlaggedTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FlaggedTransaction
+        fields = '__all__'

@@ -12,6 +12,7 @@ import Transactions from "./pages/Transactions"
 import LoginPage from "./pages/LoginPage"
 import PrivateRoute from "../src/components/PrivateRoute"
 import ProtectedRoute from './components/ProtectedRoute'
+import FraudAlertsPage from './pages/FraudAlertsPage'
 
 function App() {
   return (
@@ -33,6 +34,11 @@ function App() {
             <Route path="transactions" element={
               <ProtectedRoute permission="view_transactions">
                 <Transactions />
+              </ProtectedRoute>
+            } />
+            <Route path="fraud-alerts" element={
+              <ProtectedRoute permission="view_transactions">
+                <FraudAlertsPage />
               </ProtectedRoute>
             } />
           </Route>

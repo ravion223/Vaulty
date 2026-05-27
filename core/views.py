@@ -1,7 +1,7 @@
 import csv
 from django.http import HttpResponse
 from django.shortcuts import render
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -162,6 +162,12 @@ class DashboardStatsView(APIView):
         })
     
 
-class FlaggedTransactionViewSet(viewsets.ReadOnlyModelViewSet):
+class FlaggedTransactionViewSet(mixins.ListModelMixin,          # Allows GET (list)
+                                mixins.RetrieveModelMixin,      # Allows GET (single obj)
+                                mixins.UpdateModelMixin,        # Allows PATCH / PUT
+                                viewsets.GenericViewSet):       # Basic class for router
     queryset = FlaggedTransaction.objects.all().order_by('-amount')
     serializer_class = FlaggedTransactionSerializer
+
+    # Search by custom id, not id in db
+    lookup_field = 'transaction_id'

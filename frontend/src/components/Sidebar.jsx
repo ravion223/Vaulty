@@ -26,6 +26,9 @@ const Sidebar = () => {
                 <AccessGuard permission="view_transactions">
                     <NavLink to="/transactions" className={navLinkClass}>Transactions</NavLink>
                 </AccessGuard>
+                <AccessGuard permission="view_transactions">
+                    <NavLink to="/fraud-alerts" className={navLinkClass}>Fraud alerts</NavLink>
+                </AccessGuard>
             </nav>
         </aside>
     )

@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
+import { PieChart, Pie, Legend, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
 import apiClient from "../api/client";
 
 const FlaggedTransactionsDashboard = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const statusCounts = transactions.reduce((acc, tx) => {
+        acc[tx.status || 'Unknown'] = (acc[tx.status] || 0) + 1;
+        return acc;
+    }, {});
+
+    const pieData = Object.keys(statusCounts).map(status => ({
+        name: status,
+        value: statusCounts[status]
+    }))
 
     useEffect(() => {
         const fetchFraudData = async () => {
@@ -28,8 +38,10 @@ const FlaggedTransactionsDashboard = () => {
         )
     }
 
+    const COLORS = ['#3b82f6', '#f59e0b', '#ef4444', '#10b981'];
+
     return (
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white p-6 rounded-xl shadow-sm border border-mauve-100">
                 <h3 className="text-lg font-bold text-mauve-900 mb-6">
                     Top Risk Exposures
@@ -69,6 +81,31 @@ const FlaggedTransactionsDashboard = () => {
                                 ))}
                             </Bar>
                         </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-mauve-100">
+                <h3 className="text-lg font-bold text-mauve-900 mb-6">
+                    Status Breakdown
+                </h3>
+                <div className="h-80 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={pieData}
+                                innerRadius={60}
+                                outerRadius={80}
+                                paddingAngle={5}
+                                dataKey="value"
+                            >
+                                {pieData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                        </PieChart>
                     </ResponsiveContainer>
                 </div>
             </div>

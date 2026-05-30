@@ -1,7 +1,7 @@
 import csv
 from django.http import HttpResponse
 from django.shortcuts import render
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -10,8 +10,8 @@ from django.db.models import Count, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from datetime import timedelta
-from .models import Client, Account, Transaction
-from .serializers import ClientSerializer, AccountSerializer, TransactionSerializer
+from .models import Client, Account, Transaction, FlaggedTransaction
+from .serializers import ClientSerializer, AccountSerializer, TransactionSerializer, FlaggedTransactionSerializer
 
 # Create your views here.
 
@@ -160,3 +160,14 @@ class DashboardStatsView(APIView):
             "flagged_transactions": flagged_tx,
             "chart_data": chart_data,
         })
+    
+
+class FlaggedTransactionViewSet(mixins.ListModelMixin,          # Allows GET (list)
+                                mixins.RetrieveModelMixin,      # Allows GET (single obj)
+                                mixins.UpdateModelMixin,        # Allows PATCH / PUT
+                                viewsets.GenericViewSet):       # Basic class for router
+    queryset = FlaggedTransaction.objects.all().order_by('-amount')
+    serializer_class = FlaggedTransactionSerializer
+
+    # Search by custom id, not id in db
+    lookup_field = 'transaction_id'

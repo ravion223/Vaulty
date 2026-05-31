@@ -48,7 +48,7 @@ const LoginPage = () => {
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-mauve-100 w-full max-w-md">
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-semibold text-mauve-900 mb-2">
-                        VaultCore
+                        Vaulty
                     </h1>
                     <p>
                         Login to system

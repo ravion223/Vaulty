@@ -166,7 +166,7 @@ class FlaggedTransactionViewSet(mixins.ListModelMixin,          # Allows GET (li
                                 mixins.RetrieveModelMixin,      # Allows GET (single obj)
                                 mixins.UpdateModelMixin,        # Allows PATCH / PUT
                                 viewsets.GenericViewSet):       # Basic class for router
-    queryset = FlaggedTransaction.objects.all().order_by('-amount')
+    queryset = FlaggedTransaction.objects.filter(is_flagged=True).order_by('-amount')
     serializer_class = FlaggedTransactionSerializer
 
     # Search by custom id, not id in db

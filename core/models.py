@@ -162,11 +162,12 @@ class FlaggedTransaction(models.Model):
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     timestamp = models.DateTimeField()
     status = models.CharField(max_length=20)
+    currency = models.CharField(max_length=3, default='USD')
     is_flagged = models.BooleanField()
     processed_at = models.DateTimeField()
 
     class Meta:
-        managed = False 
+        # managed = False 
         db_table = 'core_transaction_flagged'
         verbose_name = 'Flagged Transaction'
         verbose_name_plural = 'Flagged Transactions'

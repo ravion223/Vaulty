@@ -16,10 +16,16 @@ const FraudAlertsPage = () => {
     const [selectedAlert, setSelectedAlert] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [currencyFilter, setCurrencyFilter] = useState('USD');
+
     useEffect (() => {
         const fetchAlerts = async () => {
             try {
                 let url = `flagged-transactions/?page=${page}`
+                if (currencyFilter) {
+                    url += `&currency=${currencyFilter}`;
+                }
+
                 const response = await apiClient.get(url);
                 setAlerts(response.data.results || response.data);
                 setHasNext(response.data.next !== null);
@@ -31,7 +37,7 @@ const FraudAlertsPage = () => {
             }
         };
         fetchAlerts();
-    }, [page]);
+    }, [page, currencyFilter]);
 
     const handleResolveTransaction = async () => {
         if (!selectedAlert) return;
@@ -79,18 +85,37 @@ const FraudAlertsPage = () => {
 
     const priority = getQueuePriority(activeAlertsCount)
 
+    const skeletonCards = Array.from({ length: 4 });
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
             <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
-                <div>
-                    <h2 className="flex items-center gap-2 font-stretch-expanded">
-                        <FiAlertTriangle className="text-red-500 animate-pulse" />
-                        Fraud Alerts Queue
-                    </h2>
-                    <p className='text-sm font-mono mt-1'>
-                        Real-time high-risk transactions requiring manual override or resolution
-                    </p>                    
+                <div className='block'>
+                    <div>
+                        <h2 className="flex items-center gap-2 font-stretch-expanded">
+                            <FiAlertTriangle className="text-red-500 animate-pulse" />
+                            Fraud Alerts Queue
+                        </h2>
+                        <p className='text-sm font-mono mt-1'>
+                            Real-time high-risk transactions requiring manual override or resolution
+                        </p>                    
+                    </div>
+
+                    <div>
+                        <select
+                            value={currencyFilter}
+                            onChange={(e) => {
+                                setCurrencyFilter(e.target.value);
+                                setPage(1);
+                            }}
+                            className='w-full md:w-auto bg-white border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 shadow-sm font-mono outline-none cursor-pointer transition duration-200'
+                        >
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="UAH">UAH - Hryvnia</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* METRICS PANEL */}
@@ -118,7 +143,8 @@ const FraudAlertsPage = () => {
                                 Funds Under Exposure
                             </p>
                             <h4 className='text-2xl font-bold font-mono text-mauve-900 mt-1'>
-                                {loading ? '...' : `$${totalRiskAmount.toLocaleString('en-US', {maximumFractionDigits: 0})}`}
+                                {currencyFilter === 'USD' ? '$' : currencyFilter === 'EUR' ? '€' : '₴'}
+                                {loading ? '...' : `${totalRiskAmount.toLocaleString('en-US', {maximumFractionDigits: 0})}`}
                             </h4>
                         </div>
                     </div>
@@ -142,9 +168,40 @@ const FraudAlertsPage = () => {
             {/* INCIDENT FEED */}
             <div className='space-y-4'>
                 {loading ? (
-                    <div className='space-y-4 animate-pulse'>
-                        {[1, 2, 3].map((n) => (
-                            <div key={n} className='bg-white h-24 rounded-xl border border-mauve-200'></div>
+                    <div className='space-y-3'>
+                        {skeletonCards.map((_, index) => (
+                            <div 
+                                key={index} 
+                                className='bg-white rounded-xl border border-mauve-200 shadow-sm border-l-4 border-l-mauve-200 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-pulse'
+                            >
+                                {/* LEFT SIDE SKELETON */}
+                                <div className='space-y-3 w-full md:w-1/2'>
+
+                                    <div className='flex items-center gap-2'>
+                                        <div className='w-2 h-2 rounded-full bg-mauve-200'></div>
+                                        <div className='h-5 w-20 bg-mauve-100 rounded'></div>
+                                        <div className='h-4 w-32 bg-mauve-50 rounded'></div>
+                                    </div>
+                                    
+                                    <div className='flex items-center gap-2 pt-1'>
+                                        <div className='h-5 w-24 bg-mauve-100 rounded'></div>
+                                        <div className='h-3 w-4 bg-mauve-100 rounded'></div>
+                                        <div className='h-5 w-24 bg-mauve-100 rounded'></div>
+                                    </div>
+                                </div>
+
+                                {/* RIGHT SIDE SKELETON */}
+                                <div className='flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-mauve-50 w-full md:w-auto'>
+                                    <div className='flex flex-col items-start md:items-end space-y-2'>
+                                        <div className='h-3 w-20 bg-mauve-100 rounded'></div>
+                                        <div className='h-6 w-28 bg-mauve-200 rounded'></div>
+                                        <div className='h-2 w-24 bg-mauve-50 rounded'></div>
+                                    </div>
+                                    
+                                    
+                                    <div className='h-9 w-32 bg-mauve-100 rounded-lg md:ml-4'></div>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 ) : alerts.length === 0 ? (
@@ -154,7 +211,7 @@ const FraudAlertsPage = () => {
                         </div>
                         <h3 className="text-lg font-bold font-mono text-mauve-900 mb-1">Queue is Clear</h3>
                         <p className="text-sm text-mauve-500 max-w-sm font-mono">
-                            No suspicious activities detected by PySpark engine. Excellent job!
+                            No suspicious activities detected by PySpark engine.
                         </p>
                     </div>
                 ) : (
@@ -196,7 +253,8 @@ const FraudAlertsPage = () => {
                                             Impact Amount
                                         </p>
                                         <p className='text-lg font-bold text-red-600 mt-0.5'>
-                                            ${Number(alert.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                            {alert.currency === 'USD' ? '$' : alert.currency === 'EUR' ? '€' : '₴'}
+                                            {Number(alert.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                         </p>
                                         <p className='text-[10px] text-mauve-400 mt-0.5'>
                                             {new Date(alert.timestamp).toLocaleString('uk-UA')}

@@ -169,5 +169,14 @@ class FlaggedTransactionViewSet(mixins.ListModelMixin,          # Allows GET (li
     queryset = FlaggedTransaction.objects.filter(is_flagged=True).order_by('-amount')
     serializer_class = FlaggedTransactionSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        currency = self.request.query_params.get('currency')
+        if currency:
+            queryset = queryset.filter(currency=currency)
+            
+        return queryset
+
     # Search by custom id, not id in db
     lookup_field = 'transaction_id'

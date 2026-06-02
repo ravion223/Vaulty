@@ -24,6 +24,7 @@ synthetic_accounts = [f"SYNTH{str(i).zfill(7)}" for i in range(50000)]
 ACCOUNT_POOL = real_accounts + synthetic_accounts
 
 STATUSES = ['COMPLETED', 'PENDING', 'FAILED']
+CURRENCIES = ['USD', 'EUR', 'UAH']
 
 def generate_data():
     print(f"Starting generation of {TOTAL_ROWS:,} rows...")
@@ -33,7 +34,7 @@ def generate_data():
     with open(FILENAME, mode="w", newline='') as file:
         writer = csv.writer(file)
 
-        writer.writerow(['transaction_id', 'account_from', 'account_to', 'amount', 'timestamp', 'status', 'is_flagged'])
+        writer.writerow(['transaction_id', 'account_from', 'account_to', 'amount', 'timestamp', 'status', 'currency', 'is_flagged'])
 
         for batch_num in range(TOTAL_ROWS // BATCH_SIZE):
             batch = []
@@ -43,15 +44,28 @@ def generate_data():
                 acc_to = random.choice(ACCOUNT_POOL)
 
                 if random.random() < 0.01:
-                    amount = round(random.uniform(50000, 150000), 2)
+                    amount = round(random.uniform(10000, 250000), 2)
+                    is_flagged = True
+
+                    status = random.choices(
+                        STATUSES,
+                        weights=[0.10, 0.60, 0.30],
+                        k=1
+                    )[0]
                 else:
                     amount = round(random.uniform(5, 5000), 2)
+                    is_flagged = random.random() < 0.002
+
+                    status = random.choices(
+                        STATUSES,
+                        weights=[0.80, 0.15, 0.05],
+                        k=1
+                    )[0]
 
                 random_second = random.randint(0, TIME_BETWEEN)
                 trx_date = START_DATE + timedelta(seconds=random_second)
 
-                status = random.choices(STATUSES, weights=[0.8, 0.15, 0.05], k=1)[0]
-                is_flagged = random.random() < 0.05
+                currency = random.choices(CURRENCIES, weights=[0.6, 0.3, 0.1], k=1)[0]
 
                 batch.append([
                     trx_id,
@@ -60,6 +74,7 @@ def generate_data():
                     amount,
                     trx_date.strftime("%Y-%m-%d %H:%M:%S"),
                     status,
+                    currency,
                     is_flagged
                 ])
 

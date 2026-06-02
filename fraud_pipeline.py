@@ -49,7 +49,7 @@ def run_pipeline():
     suspicious_df.write.jdbc(
         url=db_url,
         table="core_transaction_flagged",
-        mode="overwrite",
+        mode="append",
         properties=db_properties
     )
 

@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Max, F
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from datetime import timedelta
@@ -111,6 +111,19 @@ class DashboardStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        def refresh_demo_dates():
+            latest_tx = Transaction.objects.aggregate(max_ts=Max('timestamp'))['max_ts']
+
+            if latest_tx:
+                now = timezone.now()
+                
+                if latest_tx < now - timedelta(days=1):
+                    delta = now - latest_tx
+
+                    Transaction.objects.update(timestamp=F('timestamp') + delta)
+        
+        refresh_demo_dates()
+
         currency = self.request.query_params.get('currency', 'USD')
 
         total_balance = Account.objects.filter(currency=currency).aggregate(total=Sum('balance'))['total'] or 0

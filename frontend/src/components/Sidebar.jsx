@@ -6,24 +6,31 @@ import { useState } from "react";
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false)
 
-    const navLinkClass = ({ isActive }) =>
-        `flex items-center gap-3 px-4 py-2 rounded-lg font-mono hover:text-white hover:tracking-wide transition-all ease-out duration-500 ${
+    const navLinkClass = ({ isActive }) => {
+        const dynamicSpacing = isOpen 
+            ? "px-4 gap-3 justify-start" 
+            : "px-0 md:px-4 gap-0 md:gap-3 justify-center md:justify-start";
+        
+        return `flex items-center gap-3 px-4 py-2 rounded-lg font-mono hover:text-white hover:tracking-wide transition-all ease-out duration-500 ${
             isActive
             ? "text-white bg-mauve-600 shadow-md"
             : "text-mauve-300 hover:bg-mauve-800"
-        }`
+        }`;
+    };
     
-        const getPaddingAndGap = () => {
-            isOpen ? "px-4 gap-3 justify-start"
-            : "px-0 md:px-4 gap-0 md:gap-3 justify-center md:justify-start";
-        }
 
-    const fraudLinkClass = ({ isActive }) =>
-        `flex items-center gap-3 px-4 py-2 rounded-lg font-mono transition-all ease-out duration-300 ${
+    const fraudLinkClass = ({ isActive }) =>{
+        const dynamicSpacing = isOpen 
+            ? "px-4 gap-3 justify-start" 
+            : "px-0 md:px-4 gap-0 md:gap-3 justify-center md:justify-start";
+
+        return `flex items-center gap-3 px-4 py-2 rounded-lg font-mono transition-all ease-out duration-300 ${
             isActive
             ? "text-red-100 bg-red-900/80 border border-red-800 shadow-md"
             : "text-red-400 hover:bg-red-900/40 hover:text-red-300 hover:tracking-wide"
         }`;
+    };
+        
 
     return (
         <aside className={`bg-mauve-900 h-screen text-white flex flex-col transition-all duration-300 ease-in-out ${
@@ -46,7 +53,7 @@ const Sidebar = () => {
                 </button>
             </div>
 
-            <div className="flex-1 p-4 space-y-8 overflow-y-auto mt-2">
+            <div className="flex-1 p-2 md:p-4 space-y-8 overflow-y-auto mt-2">
 
                 {/* MAIN SECTION */}
                 <div>
@@ -57,7 +64,7 @@ const Sidebar = () => {
                     </p>
                     <nav className="flex flex-col gap-1">
                         <NavLink to="/" className={navLinkClass}>
-                            <FiPieChart size={18} />
+                            <FiPieChart size={18} className="shrink-0" />
                             <span className={isOpen ? "inline" : "hidden md:inline"}>
                                 Dashboard
                             </span>
@@ -75,7 +82,7 @@ const Sidebar = () => {
                     <nav className="flex flex-col gap-1">
                         <AccessGuard permission="view_transactions">
                             <NavLink to="/clients" className={navLinkClass}>
-                                <FiUsers size={18} />
+                                <FiUsers size={18} className="shrink-0" />
                                 <span className={isOpen ? "inline" : "hidden md:inline"}>
                                     Clients
                                 </span>
@@ -83,7 +90,7 @@ const Sidebar = () => {
                         </AccessGuard>
 
                         <NavLink to="/accounts" className={navLinkClass}>
-                            <FiCreditCard size={18} />
+                            <FiCreditCard size={18} className="shrink-0" />
                             <span className={isOpen ? "inline" : "hidden md:inline"}>
                                 Accounts
                             </span>
@@ -109,7 +116,7 @@ const Sidebar = () => {
                     <nav className="flex flex-col gap-1">
                         <AccessGuard permission="view_transactions">
                             <NavLink to="/fraud-alerts" className={navLinkClass}>
-                                <FiAlertOctagon size={18}/>
+                                <FiAlertOctagon size={18} className="shrink-0" />
                                 <span className={isOpen ? "inline" : "hidden md:inline"}>
                                     Fraud Alerts
                                 </span>

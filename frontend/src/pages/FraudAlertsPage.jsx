@@ -87,83 +87,92 @@ const FraudAlertsPage = () => {
 
     const skeletonCards = Array.from({ length: 4 });
 
+    const formatRiskAmount = (amount) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currencyFilter,
+            notation: 'compact',
+            compactDisplay: 'short'
+        }).format(amount);
+    };
+
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
-            <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
-                <div className='block'>
-                    <div>
-                        <h2 className="flex items-center gap-2 font-stretch-expanded">
-                            <FiAlertTriangle className="text-red-500 animate-pulse" />
-                            Fraud Alerts Queue
-                        </h2>
-                        <p className='text-sm font-mono mt-1'>
-                            Real-time high-risk transactions requiring manual override or resolution
-                        </p>                    
-                    </div>
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-mauve-100'>
+                <div className='space-y-1'>
+                    <h2 className="flex items-center gap-2 text-xl font-bold text-mauve-900">
+                        <FiAlertTriangle className="text-red-500 animate-pulse" />
+                        Fraud Alerts Queue
+                    </h2>
+                    <p className='text-sm font-mono mt-1'>
+                        Real-time high-risk transactions requiring manual override or resolution
+                    </p>                    
+                </div>
 
-                    <div>
-                        <select
-                            value={currencyFilter}
-                            onChange={(e) => {
-                                setCurrencyFilter(e.target.value);
-                                setPage(1);
-                            }}
-                            className='w-full md:w-auto bg-white border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 shadow-sm font-mono outline-none cursor-pointer transition duration-200'
-                        >
-                            <option value="USD">USD - US Dollar</option>
-                            <option value="EUR">EUR - Euro</option>
-                            <option value="UAH">UAH - Hryvnia</option>
-                        </select>
+                <div className='w-full sm:w-auto'>
+                    <select
+                        value={currencyFilter}
+                        onChange={(e) => {
+                            setCurrencyFilter(e.target.value);
+                            setPage(1);
+                        }}
+                        className='w-full md:w-auto bg-white border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 shadow-sm font-mono outline-none cursor-pointer transition duration-200'
+                    >
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="UAH">UAH - Hryvnia</option>
+                    </select>
+                </div>
+            </div>
+
+            {/* METRICS PANEL */}
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full'>
+                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4'>
+                    <div className='p-3 bg-red-50 text-red-600 rounded-lg'>
+                        <FiActivity size={24} className='animate-pulse' />
+                    </div>
+                    <div className='min-w-0 flex-1'>
+                        <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider truncate'>
+                            Active Threats
+                        </p>
+                        <h4 className='text-xl sm:text-2xl font-bold font-mono text-mauve-900 mt-1 truncate'>
+                            {loading ? '...' : activeAlertsCount}
+                        </h4>
                     </div>
                 </div>
 
-                {/* METRICS PANEL */}
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                    <div className='bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4'>
-                        <div className='p-3 bg-red-50 text-red-600 rounded-lg'>
-                            <FiActivity size={24} className='animate-pulse' />
-                        </div>
-                        <div>
-                            <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider'>
-                                Active Threats
-                            </p>
-                            <h4 className='text-2xl font-bold font-mono text-mauve-900 mt-1'>
-                                {loading ? '...' : activeAlertsCount}
-                            </h4>
-                        </div>
+                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4'>
+                    <div className='p-3 bg-amber-50 text-amber-600 rounded-lg shrink-0'>
+                        <FiDollarSign size={24} />
                     </div>
+                    <div className='min-w-0 flex-1'>
+                        <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider truncate'>
+                            Funds Under Exposure
+                        </p>
+                        <h4 
+                            className='text-xl sm:text-2xl font-bold font-mono text-mauve-900 mt-1 truncate tracking-tight'
+                            title={totalRiskAmount}
+                        >
+                            {loading ? '...' : `${formatRiskAmount(totalRiskAmount)}`}
+                        </h4>
+                    </div>
+                </div>
 
-                    <div className='bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4'>
-                        <div className='p-3 bg-amber-50 text-amber-600 rounded-lg'>
-                            <FiDollarSign size={24} />
-                        </div>
-                        <div>
-                            <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider'>
-                                Funds Under Exposure
-                            </p>
-                            <h4 className='text-2xl font-bold font-mono text-mauve-900 mt-1'>
-                                {currencyFilter === 'USD' ? '$' : currencyFilter === 'EUR' ? '€' : '₴'}
-                                {loading ? '...' : `${totalRiskAmount.toLocaleString('en-US', {maximumFractionDigits: 0})}`}
-                            </h4>
-                        </div>
+                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4 sm:col-span-2 lg:col-span-1'>
+                    <div className={`p-3 rounded-lg shrink-0 ${priority.bgColor} ${priority.textColor}`}>
+                        <HiShieldCheck size={24} />
                     </div>
-
-                    <div className='bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4'>
-                        <div className={`p-3 rounded-lg ${priority.bgColor} ${priority.textColor}`}>
-                            <HiShieldCheck size={24} />
-                        </div>
-                        <div>
-                            <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider'>
-                                Queue Priority
-                            </p>
-                            <h4 className={`text-2xl font-bold font-mono ${priority.textColor} mt-1`}>
-                                {loading ? '...' : priority.text}
-                            </h4>
-                        </div>
+                    <div className='min-w-0 flex-1'>
+                        <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider truncate'>
+                            Queue Priority
+                        </p>
+                        <h4 className={`text-xl sm:text-2xl font-bold font-mono ${priority.textColor} mt-1 truncate`}>
+                            {loading ? '...' : priority.text}
+                        </h4>
                     </div>
-                </div>    
-            </div>
+                </div>
+            </div>    
 
             {/* INCIDENT FEED */}
             <div className='space-y-4'>

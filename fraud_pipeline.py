@@ -38,19 +38,20 @@ def run_pipeline():
 
     logger.info("Saving")
 
-    db_url = f"jdbc:postgresql://host.docker.internal:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+    jdbc_url = f"jdbc:postgresql://ep-red-star-a26i4qv9-pooler.eu-central-1.aws.neon.tech:5432/neondb?sslmode=require&channel_binding=require"
 
-    db_properties = {
+    connection_properties = {
         "user": os.getenv("DB_USER"),
         "password": os.getenv("DB_PASSWORD"),
         "driver": "org.postgresql.Driver"
     }
 
+    print(f"Anomalies found: {suspicious_df.count()}")
     suspicious_df.write.jdbc(
-        url=db_url,
+        url=jdbc_url,
         table="core_transaction_flagged",
         mode="append",
-        properties=db_properties
+        properties=connection_properties
     )
 
     spark.stop()

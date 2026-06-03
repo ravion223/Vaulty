@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(avr=6v(w7)4bikfuws5l3d&6rsk2h+b)rxsn04o46pg1_o$i#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
     'vaulty-backend.onrender.com',

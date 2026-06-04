@@ -27,15 +27,15 @@ const Transactions = () => {
     const columns = [
         {
             header: 'Transaction ID',
-            className: 'pr-4',
+            className: 'pl-1',
             render: (transaction) => (
                 <>
-                    <div className="font-mono text-sm font-medium text-mauve-900" title={transaction.id}>
+                <div className="font-mono text-sm font-medium text-mauve-900" title={transaction.id}>
                     TRX-{transaction.id.slice(0, 6)}
                 </div>
                 <div className="text-[11px] font-bold mt-0.5">
                     {transaction.is_flagged ? (
-                        <span className="text-red-500 flex items-center gap-1">
+                        <span className="text-red-500 flex justify-end md:justify-start items-center gap-1">
                             <FaFlag size={10} /> FLAGGED
                         </span>
                     ) : (
@@ -61,7 +61,7 @@ const Transactions = () => {
         },
         {
             header: 'Amount',
-            className: "pl-1 pr-4 text-right",
+            className: "pl-1 pr-4",
             render: (transaction) => (
                 <div className="text-sm font-bold text-mauve-900">
                     {formatCurrency(transaction.amount, transaction.currency)}
@@ -70,7 +70,7 @@ const Transactions = () => {
         },
         {
             header: 'Status',
-            className: "pl-1 pr-4 text-center",
+            className: "pl-1 pr-4",
             render: (transaction) => (
                 <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
                     transaction.status === "COMPLETED" ? 'bg-emerald-100 text-emerald-700' :
@@ -97,7 +97,7 @@ const Transactions = () => {
         },
         {
             header: 'Actions',
-            className: "pl-1 text-center",
+            className: "pl-1",
             render: (transaction) => (
                 <>
                     <AccessGuard permission="flag_transaction">
@@ -245,10 +245,10 @@ const Transactions = () => {
     }
 
     return (
-        <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex flex-col">
-                    <h2>
+        <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border border-mauve-100 min-h-full">
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6 pb-4 border-b border-mauve-100 w-full">
+                <div className="flex items-center justify-between xl:justify-start gap-4 w-full xl:w-auto">
+                    <h2 className="text-xl font-bold text-mauve-900 tracking-tight">
                         Bank transactions
                     </h2>
                     {!loading && transactions.length !== 0 && (
@@ -261,57 +261,62 @@ const Transactions = () => {
                             </button>
                         </AccessGuard>
                     )}
-                    
                 </div>
-                <div className="relative w-full sm:w-72">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FiSearch className="text-mauve-400" />
+                
+                <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto items-stretch sm:items-center">
+                    <div className="relative w-full sm:w-72">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <FiSearch className="text-mauve-400" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search by name, surname..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-mauve-400 bg-white"
+                        />
                     </div>
-                    <input
-                        type="text"
-                        placeholder="Search by name, surname..."
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    />
-                </div>
-                <div className="flex gap-2">
-                    <div className="flex items-center gap-2">
-                            <FiFilter className="text-mauve-500" />
-                            <span className="text-sm font-medium text-mauve-600">Status:</span>
-                            
+                    
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                        <div className="flex flex-1 sm:flex-none items-center gap-2 min-w-120px">
+                            <span className="text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider">Status:</span>
                             <select
                                 value={statusFilter}
                                 onChange={handleStatusChange}
-                                className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition">
+                                className="w-full bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
+                            >
                                 <option value="">All</option>
                                 <option value="COMPLETED">Completed</option>
                                 <option value="PROCESSING">Processing</option>
                                 <option value="FAILED">Failed</option>
                             </select>
-                    </div>
-                    <button
-                        onClick={toggleFlaggedFilter}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                            filterFlagged ? "bg-red-50 text-red-700 border border-red-200"
-                            : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
-                        }`}
-                    >
-                        <FiFilter size={16} />
-                        {filterFlagged ? "Show all" : "Only flagged"}
-                    </button>
-                    <AccessGuard permission="export_reports">
+                        </div>
+                        
                         <button
-                            onClick={handleExportCSV}
-                            disabled={loading || transactions.length === 0}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={toggleFlaggedFilter}
+                            className={`flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-300 ${
+                                filterFlagged ? "bg-red-50 text-red-700 border border-red-200"
+                                : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
+                            }`}
                         >
-                            <FiDownload size={16} />
+                            <FiFilter size={16} />
+                            <span className="whitespace-nowrap">{filterFlagged ? "Show all" : "Only flagged"}</span>
                         </button>
-                    </AccessGuard>
+                        
+                        <AccessGuard permission="export_reports">
+                            <button
+                                onClick={handleExportCSV}
+                                disabled={loading || transactions.length === 0}
+                                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                            >
+                                <FiDownload size={16} />
+                            </button>
+                        </AccessGuard>
+                    </div>
                 </div>
             </div>
-            <div>
+
+            <div className="w-full">
                 <Table
                     columns={getVisibleColumns()}
                     data={transactions}
@@ -323,6 +328,7 @@ const Transactions = () => {
                     onPrev={() => setPage((prev) => Math.max(1, prev - 1))}
                 />
             </div>
+            
             <AddTransactionModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}

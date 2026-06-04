@@ -21,11 +21,11 @@ const Table = ({ columns, data, loading, page, hasNext, hasPrevious, onNext, onP
             ) : (
                 <table className="w-full text-left border-collapse md:table">
                     <thead className="hidden md:table-header-group">
-                        <tr className="border-b border-mauve-200 text-mauve-500 text-sm">
+                        <tr className="border-b border-mauve-200 text-mauve-400 text-xs tracking-wider font-bold uppercase">
                             {columns.map((col, index) => (
                                 <th 
                                     key={index} 
-                                    className={`pb-3 font-mono font-medium ${col.className || ''}`}
+                                    className={`pb-3 font-mono font-bold ${col.className || ''}`}
                                 >
                                     {col.header}
                                 </th>
@@ -54,16 +54,22 @@ const Table = ({ columns, data, loading, page, hasNext, hasPrevious, onNext, onP
                             data.map((row, rowIndex) => (
                                 <tr 
                                     key={row.id || rowIndex} 
-                                    className="block md:table-row mb-4  md:mb-0 border-b border-mauve-100 md:border-none md:border-b md:border-mauve-100 rounded-lg bg-white p-3 md:p-0 shadow-sm md:shadow-none"
+                                    className="block md:table-row mb-4  md:mb-0 border border-mauve-100 md:border-none md:border-b md:border-mauve-100 rounded-xl bg-white p-4 md:p-0 shadow-sm md:shadow-none transition duration-200 hover-bg-mauve-50/40"
                                 >
                                     {columns.map((col, colIndex) => (
                                         <td 
                                             key={colIndex} 
-                                            className={`flex justify-between items-center md:table-cell py-3 border-b border-mauve-50 md:border-none ${col.className || ''}`}
+                                            className={`flex justify-between items-center md:table-cell py-3.5 px-2 border-b border-mauve-50 md:border-none min-w-0 ${col.className || ''}`}
                                         >
-                                            {col.render 
+                                            <span className="md:hidden text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider pr-4">
+                                                {col.header}
+                                            </span>
+
+                                            <div className="text-right md:text-left flex-1 md:flex-none truncate">
+                                                {col.render 
                                                 ? col.render(row) 
                                                 : row[col.accessor]}
+                                            </div>
                                         </td>
                                     ))}
                                 </tr>
@@ -74,7 +80,7 @@ const Table = ({ columns, data, loading, page, hasNext, hasPrevious, onNext, onP
             )}
 
             {!loading && data && data.length > 0 && page !== undefined && (
-                <div className="flex flex-col sm:flex-row items-center justify-between border-t border-mauve-200 mt-4 pt-4 mb-2">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-mauve-200 mt-6 pt-4 mb-2">
                     <button
                         onClick={onPrev}
                         disabled={!hasPrevious}

@@ -31,7 +31,7 @@ const Clients = () => {
     const columns = [
         {
             header: 'Client Info',
-            className: 'pr-4',
+            className: 'pl-1',
             render: (client) => (
                 <>
                     <div className="font-semibold text-mauve-900">
@@ -45,7 +45,7 @@ const Clients = () => {
         },
         {
             header: 'Contact & Tax',
-            className: 'text-mauve-60',
+            className: 'text-mauve-60 pl-1 pr-4',
             render: (client) => (
                 <>
                     <div className="text-sm text-mauve-800 font-medium">
@@ -62,7 +62,7 @@ const Clients = () => {
             className: 'pl-1 pr-4',
             render: (client) => (
                 <>
-                    <div className='flex items-center gap-1'>
+                    <div className='flex justify-end md:justify-start items-center gap-1'>
                         <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
                             client.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
                             client.kyc_status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
@@ -90,7 +90,7 @@ const Clients = () => {
             className: 'pl-1 pr-4',
             render: (client) => (
                 <>
-                    <div className="flex items-center gap-2">
+                    <div className="flex justify-end md:justify-start items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${
                             client.risk_level === 'HIGH' ? 'bg-red-500' :
                             client.risk_level === 'MEDIUM' ? 'bg-amber-500' :
@@ -210,16 +210,16 @@ const Clients = () => {
     return (
         <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
-            <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
-                <div className='flex flex-col'>
-                    <h2 className="font-stretch-expanded">
+            <div className='flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6 w-full'>
+                <div className='flex items-center justify-between xl:justify-start gap-4 w-full xl:w-auto'>
+                    <h2 className="text-xl font-bold text-mauve-900">
                         Bank clients
                     </h2>
                     {!loading && clients.length !== 0 && (
                         <AccessGuard permission="create_client">
                             <button
                                 onClick={() => setIsAddModalOpen(true)}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-500"
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap"
                             >
                                 + Add Client
                             </button>
@@ -228,50 +228,52 @@ const Clients = () => {
                     
                 </div>
                 
-                
-                <div className="relative w-full sm:w-72">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FiSearch className="text-mauve-400" />
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Search by name, email..."
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    />
-                    </div>
-                    <div className='flex items-center gap-2'>
-                        <div className="flex gap-2 items-center">
-                            <FiFilter className="text-mauve-500" />
-                            <span className="text-sm font-medium text-mauve-600">Risk:</span>
-                            <select
-                            value={riskFilter}
-                            onChange={handleRiskFilter}
-                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
-                                <option value="">All</option>
-                                <option value="LOW">Low</option>
-                                <option value="MEDIUM">Medium</option>
-                                <option value="HIGH">High</option>
-                            </select>
+                <div className='flex flex-col sm:flex-row gap-4 w-full xl:w-auto items-stretch sm:items-center'>
+                    <div className="relative w-full sm:w-72">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <FiSearch className="text-mauve-400" />
                         </div>
-                        <div className="flex gap-2 items-center">
-                            <FiFilter className="text-mauve-500" />
-                            <span className="text-sm font-medium text-mauve-600">Kyc status:</span>
-                            <select
-                            value={kycStatusFilter}
-                            onChange={handleKycStatusFilter}
-                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-500">
-                                <option value="">All</option>
-                                <option value="REJECTED">Rejected</option>
-                                <option value="PENDING">Pending</option>
-                                <option value="APPROVED">Approved</option>
-                            </select>
-                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search by name, email..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-mauve-400"
+                        />
                     </div>
-                    
+                        <div className='flex items-center gap-3 w-full sm:w-auto'>
+                            <div className="flex flex-1 sm:flex-none items-center gap-2 min-w-110px">
+                                <FiFilter className="text-mauve-400 shrink-0 hidden sm:inline" />
+                                <span className="text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider">Risk:</span>
+                                <select
+                                value={riskFilter}
+                                onChange={handleRiskFilter}
+                                className="w-full bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300">
+                                    <option value="">All</option>
+                                    <option value="LOW">Low</option>
+                                    <option value="MEDIUM">Medium</option>
+                                    <option value="HIGH">High</option>
+                                </select>
+                            </div>
+                            <div className="flex flex-1 sm:flex-none items-center gap-2 min-w-140px">
+                                <FiFilter className="text-mauve-400 shrink-0 hidden sm:inline" />
+                                <span className="text-xs font-mono text-mauve-400 uppercase tracking-wider whitespace-nowrap">KYC:</span>
+                                <select
+                                    value={kycStatusFilter}
+                                    onChange={handleKycStatusFilter}
+                                    className="w-full bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300">
+                                    <option value="">All</option>
+                                    <option value="REJECTED">Rejected</option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="APPROVED">Approved</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
-            <div>
+                
+            <div className='w-full'>
                 <Table 
                     columns={columns} 
                     data={clients}

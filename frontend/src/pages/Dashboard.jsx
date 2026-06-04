@@ -19,6 +19,29 @@ const formatCompactNumber = (number, currencyCode) => {
   return `${symbol}${(number / 1000).toFixed(1)}k`;
 }
 
+const KpiCardSkeleton = () => (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-mauve-100 flex items-center gap-4 animate-pulse">
+        <div className="w-12 h-12 bg-mauve-100 rounded-lg shrink-0"></div>
+        <div>
+          <div className="h-3.5 bg-mauve-100 rounded w-24"></div>
+          <div className="h-6 bg-mauve-200 rounded w-32"></div>
+        </div>
+      </div>
+    )
+
+    const ChartSkeleton = () => (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-mauve-100 animate-pulse">
+        <div className="h-5 w-40 rounded-2xl bg-mauve-200 mb-6"></div>
+        
+        <div className="h-80 bg-mauve-50/50 rounded-lg flex items-end p-4 gap-2 border border-dashed border-mauve-100">
+          <div className='w-full h-1/3 bg-mauve-100/50 rounded-t'></div>
+          <div className='w-full h-1/3 bg-mauve-100/50 rounded-t'></div>
+          <div className='w-full h-1/3 bg-mauve-100/50 rounded-t'></div>
+          <div className='w-full h-1/3 bg-mauve-100/50 rounded-t'></div>
+        </div>
+      </div>
+    )
+
 const Dashboard = () => {
     const [currency, setCurrency] = useState("USD")
 
@@ -52,18 +75,15 @@ const Dashboard = () => {
                 <div className="h-4 bg-gray-200 rounded w-64 mb-6"></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[...Array(4)].map((_, i) => (
-                        <div key={i} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-28"></div>
+                        <KpiCardSkeleton key ={i}/>
                     ))}
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-96"></div>
+                <ChartSkeleton />
             </div>
         );
     }
 
     return (
-      loading ? (
-        <div className="text-mauve-500 p-6">Loading Dashboard...</div>
-      ) :
     (<div className="space-y-6">
       <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
         <div>

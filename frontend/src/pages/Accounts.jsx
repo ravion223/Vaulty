@@ -29,7 +29,7 @@ const Accounts = () => {
     const columns = [
         {
             header: 'Client',
-            className: 'text-mauve-800 font-medium',
+            className: 'pl-1',
             render: (account) => (
                 <>
                     {account.client_name}
@@ -38,7 +38,7 @@ const Accounts = () => {
         },
         {
             header: 'Account №',
-            className: 'pl-1 text-mauve-600',
+            className: 'pl-1',
             render: (account) => (
                 <>
                     •••• {account.account_number.slice(-4)}
@@ -47,7 +47,7 @@ const Accounts = () => {
         },
         {
             header: 'Currency',
-            className: 'pl-1 text-mauve-600',
+            className: 'pl-1',
             render: (account) => (
                 <>
                     {account.currency}
@@ -68,7 +68,7 @@ const Accounts = () => {
             className: 'pl-1 text-center',
             render: (account) => (
                 <>
-                    <div className="pl-1 text-center">
+                    <div className="pl-1 text-end md:text-center">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             account.status === "FROZEN" ?
                             'bg-cyan-100 text-cyan-700' :
@@ -82,7 +82,7 @@ const Accounts = () => {
         },
         {
             header: 'Creation date',
-            className: 'pl-1 text-center',
+            className: 'pl-1 text-start',
             render: (account) => (
                 <>
                     {new Date(account.created_at).toLocaleDateString('uk-UA')}
@@ -217,10 +217,10 @@ const Accounts = () => {
     }
 
     return (
-        <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex flex-col">
-                    <h2 className="text-2xl font-bold text-mauve-900 font-stretch-expanded">
+        <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border border-mauve-100 min-h-full">
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6 pb-4 border-b border-mauve-100 w-full">
+                <div className="flex items-center justify-between xl:justify-start gap-4 w-full xl:w-auto">
+                    <h2 className="text-xl font-bold text-mauve-900 tracking-tight">
                         Bank accounts
                     </h2>
                     {!loading && accounts.length !== 0 && (
@@ -231,59 +231,65 @@ const Accounts = () => {
                             + Open Account
                         </button>
                     )}
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto items-stretch sm:items-center">
+                    <div className="relative w-full sm:w-72">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <FiSearch className="text-mauve-400" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search by name, surname..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-mauve-400 bg-white"
+                        />
+                    </div>
                     
-                </div>
-                <div className="relative w-full sm:w-72">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FiSearch className="text-mauve-400" />
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Search by name, surname..."
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    />
-                </div>
-                <div className="flex gap-2">
-                    <div className="flex items-center gap-2">
-                        <FiFilter className="text-mauve-500" />
-                        <span className="text-sm font-medium text-mauve-600">Currency:</span>
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                        <div className="flex flex-1 sm:flex-none items-center gap-2 min-w-120px">
+                            <span className="text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider">Currency:</span>
+                            <select
+                                value={currencyFilter}
+                                onChange={handleCurrencyChange}
+                                className="w-full bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
+                            >
+                                <option value="">All</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="UAH">UAH</option>
+                            </select>
+                        </div>
                         
-                        <select
-                            value={currencyFilter}
-                            onChange={handleCurrencyChange}
-                            className="bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition">
-                            <option value="">All</option>
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="UAH">UAH</option>
-                        </select>
+                        <button
+                            onClick={toggleFrozenFilter}
+                            className={`flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-300 ${
+                                filterFrozen 
+                                    ? "bg-cyan-100 text-cyan-700 border-cyan-200"
+                                    : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
+                            }`}
+                        >
+                            <FiFilter size={16} />
+                            <span className="whitespace-nowrap">{filterFrozen ? 'Show all' : 'Only frozen'}</span>
+                        </button>
                     </div>
-                    <button
-                    onClick={toggleFrozenFilter}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                            filterFrozen ? "bg-cyan-100 text-cyan-700 border border-cyan-200"
-                            : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
-                        }`}
-                    >
-                    <FiFilter size={16} />
-                    {filterFrozen ? 'Show all' : 'Only frozen'}
-                    </button>
                 </div>
             </div>
-                <div>
-                    <Table 
-                        columns={getVisibleColumns()} 
-                        data={accounts} 
-                        loading={loading}
-                        page={page}
-                        hasNext={hasNext}
-                        hasPrevious={hasPrevious}
-                        onNext={() => setPage((prev) => prev + 1)}
-                        onPrev={() => setPage((prev) => Math.max(1, prev - 1))}
-                    />
-                </div>
+
+            <div className="w-full">
+                <Table 
+                    columns={getVisibleColumns()} 
+                    data={accounts} 
+                    loading={loading}
+                    page={page}
+                    hasNext={hasNext}
+                    hasPrevious={hasPrevious}
+                    onNext={() => setPage((prev) => prev + 1)}
+                    onPrev={() => setPage((prev) => Math.max(1, prev - 1))}
+                />
+            </div>
+            
             <AddAccountModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}

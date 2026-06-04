@@ -88,7 +88,7 @@ const Dashboard = () => {
       <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
         <div>
           <h2 className="text-2xl font-bold text-mauve-900">Dashboard view</h2>
-          <p className="text-mauve-500 text-sm">Key indicators of VaultCore for this week.</p>
+          <p className="text-mauve-500 text-sm">Key indicators of Vaulty for this week.</p>
         </div>
         <div>
           <span className="text-xs font-bold text-mauve-500 uppercase px-1">Currency:</span>

@@ -208,7 +208,7 @@ const Clients = () => {
     }
 
     return (
-        <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
+        <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
             <div className='flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6 w-full'>
                 <div className='flex items-center justify-between xl:justify-start gap-4 w-full xl:w-auto'>

@@ -39,7 +39,6 @@ const DashboardPage = () => {
                 </div>
             </div>
 
-            {/* Рендеринг активного дашборду */}
             <div className="mt-6">
                 {activeTab === 'overview' ? <Dashboard /> : <FlaggedTransactionsDashboard />}
             </div>

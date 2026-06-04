@@ -4,7 +4,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import MainLayout from "../layots/MainLayout"
+import MainLayout from "./layots/MainLayout"
 import Clients from "./pages/Clients"
 import Accounts from "./pages/Accounts"
 import DashboardPage from "./pages/DashboardPage"

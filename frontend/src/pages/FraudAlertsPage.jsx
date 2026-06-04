@@ -97,7 +97,7 @@ const FraudAlertsPage = () => {
     };
 
     return (
-        <div className="p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
+        <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
             <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-mauve-100'>
                 <div className='space-y-1'>

@@ -19,6 +19,7 @@ const formatCompactNumber = (number, currencyCode) => {
   return `${symbol}${(number / 1000).toFixed(1)}k`;
 }
 
+
 const KpiCardSkeleton = () => (
       <div className="bg-white p-6 rounded-xl shadow-sm border border-mauve-100 flex items-center gap-4 animate-pulse">
         <div className="w-12 h-12 bg-mauve-100 rounded-lg shrink-0"></div>

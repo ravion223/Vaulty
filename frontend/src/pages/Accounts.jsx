@@ -29,7 +29,7 @@ const Accounts = () => {
     const columns = [
         {
             header: 'Client',
-            className: 'pl-1',
+            className: 'pl-1 sm:pl-4',
             render: (account) => (
                 <>
                     {account.client_name}
@@ -38,7 +38,7 @@ const Accounts = () => {
         },
         {
             header: 'Account №',
-            className: 'pl-1',
+            className: 'pl-1 sm:pl-4',
             render: (account) => (
                 <>
                     •••• {account.account_number.slice(-4)}
@@ -47,7 +47,7 @@ const Accounts = () => {
         },
         {
             header: 'Currency',
-            className: 'pl-1',
+            className: 'pl-1 sm:pl-4',
             render: (account) => (
                 <>
                     {account.currency}
@@ -56,7 +56,7 @@ const Accounts = () => {
         },
         {
             header: 'Balance',
-            className: 'pl-1 text-sm font-bold text-mauve-900',
+            className: 'pl-1 sm:pl-4 text-sm font-bold text-mauve-900',
             render: (account) => (
                 <>
                     {formatCurrency(account.balance, account.currency)}
@@ -65,7 +65,7 @@ const Accounts = () => {
         },
         {
             header: 'Status',
-            className: 'pl-1 text-center',
+            className: 'pl-1 sm:text-center',
             render: (account) => (
                 <>
                     <div className="pl-1 text-end md:text-center">
@@ -82,7 +82,7 @@ const Accounts = () => {
         },
         {
             header: 'Creation date',
-            className: 'pl-1 text-start',
+            className: 'pl-1 sm:pl-3 text-start',
             render: (account) => (
                 <>
                     {new Date(account.created_at).toLocaleDateString('uk-UA')}
@@ -91,7 +91,7 @@ const Accounts = () => {
         },
         {
             header: 'Actions',
-            className: '',
+            className: 'pl-1 sm:pl-4',
             render: (account) => (
                 <>
                     <AccessGuard permission="freeze_account">
@@ -247,13 +247,13 @@ const Accounts = () => {
                         />
                     </div>
                     
-                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row items-left gap-3 w-full sm:w-auto">
                         <div className="flex flex-1 sm:flex-none items-center gap-2 min-w-120px">
                             <span className="text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider">Currency:</span>
                             <select
                                 value={currencyFilter}
                                 onChange={handleCurrencyChange}
-                                className="w-full bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
+                                className="w-full min-w-30 bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
                             >
                                 <option value="">All</option>
                                 <option value="USD">USD</option>

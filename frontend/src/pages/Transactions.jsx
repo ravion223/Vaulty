@@ -27,83 +27,87 @@ const Transactions = () => {
     const columns = [
         {
             header: 'Transaction ID',
-            className: 'pl-1',
+            className: 'pl-1 sm:pl-4',
             render: (transaction) => (
-                <>
-                <div className="font-mono text-sm font-medium text-mauve-900" title={transaction.id}>
-                    TRX-{transaction.id.slice(0, 6)}
+                <div className="flex flex-col items-end sm:items-end md:items-start min-w-0 w-full">
+                    <div className="font-mono text-sm font-medium text-mauve-900 truncate" title={transaction.id}>
+                        TRX-{transaction.id.slice(0, 6)}
+                    </div>
+                    <div className="text-[11px] font-bold mt-0.5 shrink-0">
+                        {transaction.is_flagged ? (
+                            <span className="text-red-500 flex items-center justify-end md:justify-start gap-1">
+                                <FaFlag size={10} /> FLAGGED
+                            </span>
+                        ) : (
+                            <span className="text-mauve-400">CLEAR</span>
+                        )}
+                    </div>
                 </div>
-                <div className="text-[11px] font-bold mt-0.5">
-                    {transaction.is_flagged ? (
-                        <span className="text-red-500 flex justify-end md:justify-start items-center gap-1">
-                            <FaFlag size={10} /> FLAGGED
-                        </span>
-                    ) : (
-                        <span className="text-mauve-400">CLEAR</span>
-                    )}
-                </div>
-                </>
             )
         },
         {
             header: 'Participants',
-            className: "pl-1",
+            className: "pl-1 sm:pl-4",
             render: (transaction) => (
-                <>
-                    <div className="text-sm font-semibold text-mauve-900">
+                <div className="flex flex-col items-end md:items-start min-w-0 sm:max-w-none w-full whitespace-normal">
+                    <div className="text-sm font-semibold text-mauve-900 break-normal w-full">
                         To: {transaction.receiver_name}
                     </div>
-                    <div className="text-xs text-mauve-500 mt-0.5">
+                    <div className="text-xs text-mauve-500 mt-0.5 break-normal w-full">
                         From: {transaction.sender_name}
                     </div>
-                </>   
+                </div>
             )
         },
         {
             header: 'Amount',
-            className: "pl-1 pr-4",
+            className: "pl-1 sm:pl-4 pr-4 md:text-right",
             render: (transaction) => (
-                <div className="text-sm font-bold text-mauve-900">
-                    {formatCurrency(transaction.amount, transaction.currency)}
+                <div className="flex justify-end">
+                    <div className="text-sm font-bold text-mauve-900 text-right truncate max-w-30 sm:max-w-none w-full">
+                        {formatCurrency(transaction.amount, transaction.currency)}
+                    </div>
                 </div>
             )
         },
         {
             header: 'Status',
-            className: "pl-1 pr-4",
+            className: "pl-1 sm:pl-4 pr-4 md:text-center",
             render: (transaction) => (
-                <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
-                    transaction.status === "COMPLETED" ? 'bg-emerald-100 text-emerald-700' :
-                    transaction.status === "PROCESSING" ? 'bg-amber-100 text-amber-700' :
-                    'bg-red-100 text-red-700'
-                }`}>
-                    {transaction.status}
-                </span>
+                <div className="flex justify-end md:justify-center w-full shrink-0">
+                    <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase shrink-0 ${
+                        transaction.status === "COMPLETED" ? 'bg-emerald-100 text-emerald-700' :
+                        transaction.status === "PROCESSING" ? 'bg-amber-100 text-amber-700' :
+                        'bg-red-100 text-red-700'
+                    }`}>
+                        {transaction.status}
+                    </span>
+                </div>
             )
         },
         {
             header: 'Date & Time',
-            className: "pl-1 pr-4",
+            className: "pl-1 sm:pl-4 pr-4",
             render: (transaction) => (
-                <>
-                    <div className="text-sm text-mauve-800 font-medium">
+                <div className="flex flex-col items-end md:items-start min-w-0 shrink-0">
+                    <div className="text-sm text-mauve-800 font-medium whitespace-nowrap">
                         {new Date(transaction.timestamp).toLocaleDateString('uk-UA')}
                     </div>
-                    <div className="text-xs text-mauve-500 mt-0.5">
+                    <div className="text-xs text-mauve-500 mt-0.5 whitespace-nowrap">
                         {new Date(transaction.timestamp).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
                     </div>
-                </>
+                </div>
             )
         },
         {
             header: 'Actions',
-            className: "pl-1",
+            className: "pl-1 text-center",
             render: (transaction) => (
-                <>
+                <div className="flex justify-end md:justify-center w-full shrink-0">
                     <AccessGuard permission="flag_transaction">
                         <button
                             onClick={() => toggleFlagTransaction(transaction.id, transaction.is_flagged)}
-                            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+                            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 shrink-0 ${
                             transaction.is_flagged 
                                 ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 shadow-sm"
                                 : "bg-white text-mauve-500 border-mauve-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
@@ -120,7 +124,7 @@ const Transactions = () => {
                             )}
                         </button>
                     </AccessGuard>
-                </>
+                </div>
             )
         }
 
@@ -255,7 +259,7 @@ const Transactions = () => {
                         <AccessGuard permission="create_transaction">
                             <button
                                 onClick={() => setIsAddModalOpen(true)}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap"
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap shrink-0"
                             >
                                 + New transaction
                             </button>
@@ -263,8 +267,8 @@ const Transactions = () => {
                     )}
                 </div>
                 
-                <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto items-stretch sm:items-center">
-                    <div className="relative w-full sm:w-72">
+                <div className="flex flex-col lg:flex-row gap-3 w-full justify-between items-stretch lg:items-center">
+                    <div className="relative w-full sm:w-72 shrink-0">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <FiSearch className="text-mauve-400" />
                         </div>
@@ -277,8 +281,8 @@ const Transactions = () => {
                         />
                     </div>
                     
-                    <div className="flex items-center gap-3 w-full sm:w-auto">
-                        <div className="flex flex-1 sm:flex-none items-center gap-2 min-w-120px">
+                    <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div className="flex flex-1 sm:flex-none items-center gap-1.5 min-w-27.5">
                             <span className="text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider">Status:</span>
                             <select
                                 value={statusFilter}
@@ -307,7 +311,7 @@ const Transactions = () => {
                             <button
                                 onClick={handleExportCSV}
                                 disabled={loading || transactions.length === 0}
-                                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                                className="flex items-center justify-center rounded-lg bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 h-9.5 w-9.5"
                             >
                                 <FiDownload size={16} />
                             </button>
@@ -316,7 +320,7 @@ const Transactions = () => {
                 </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full overflow-hidden">
                 <Table
                     columns={getVisibleColumns()}
                     data={transactions}

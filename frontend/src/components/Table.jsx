@@ -19,7 +19,8 @@ const Table = ({ columns, data, loading, page, hasNext, hasPrevious, onNext, onP
                     </p>
                 </div>
             ) : (
-                <table className="w-full text-left border-collapse md:table">
+                // table-fixed is the GOAT
+                <table className="w-full text-left border-collapse md:table table-fixed">
                     <thead className="hidden md:table-header-group">
                         <tr className="border-b border-mauve-200 text-mauve-400 text-xs tracking-wider font-bold uppercase">
                             {columns.map((col, index) => (
@@ -54,18 +55,18 @@ const Table = ({ columns, data, loading, page, hasNext, hasPrevious, onNext, onP
                             data.map((row, rowIndex) => (
                                 <tr 
                                     key={row.id || rowIndex} 
-                                    className="block md:table-row mb-4  md:mb-0 border border-mauve-100 md:border-none md:border-b md:border-mauve-100 rounded-xl bg-white p-4 md:p-0 shadow-sm md:shadow-none transition duration-200 hover-bg-mauve-50/40"
+                                    className="block md:table-row mb-4  md:mb-0 border border-mauve-100 md:border-none md:border-b md:border-mauve-100 rounded-xl bg-white p-4 md:p-2 shadow-sm md:shadow-none transition duration-200 hover-bg-mauve-50/40"
                                 >
                                     {columns.map((col, colIndex) => (
                                         <td 
                                             key={colIndex} 
-                                            className={`flex justify-between items-center md:table-cell py-3.5 px-2 border-b border-mauve-50 md:border-none min-w-0 ${col.className || ''}`}
+                                            className={`flex justify-between items-start md:items-center md:table-cell py-3.5 px-2 md:px-4 border-b border-mauve-50 md:border-none min-w-0 ${col.className || ''}`}
                                         >
-                                            <span className="md:hidden text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider pr-4">
+                                            <span className="md:hidden text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider pr-4 pt-0.5 shrink-0 select-none">
                                                 {col.header}
                                             </span>
 
-                                            <div className="text-right md:text-left flex-1 md:flex-none truncate">
+                                            <div className="text-right md:text-left text-sm font-medium text-mauve-800 flex-1 min-w-0 whitespace-normal md:whitespace-nowrap break-word md:truncate">
                                                 {col.render 
                                                 ? col.render(row) 
                                                 : row[col.accessor]}

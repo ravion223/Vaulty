@@ -31,39 +31,39 @@ const Clients = () => {
     const columns = [
         {
             header: 'Client Info',
-            className: 'pl-1',
+            className: 'pl-1 sm:pl-4',
             render: (client) => (
-                <>
-                    <div className="font-semibold text-mauve-900">
+                <div className='flex flex-col items-end md:items-start min-w-0 w-full whitespace-normal'>
+                    <div className="text-sm font-semibold text-mauve-900 text-right md:text-left w-full break-normal">
                         {client.first_name} {client.last_name}
                     </div>
-                    <div className="text-xs text-mauve-500 mt-0.5">
+                    <div className="text-xs text-mauve-500 mt-0.5 text-right md:text-left w-full break-all">
                         {client.email}
                     </div>
-                </>
+                </div>
             )
         },
         {
             header: 'Contact & Tax',
-            className: 'text-mauve-60 pl-1 pr-4',
+            className: 'pl-1 sm:pl-4 pr-4',
             render: (client) => (
-                <>
-                    <div className="text-sm text-mauve-800 font-medium">
+                <div className='flex flex-col items-end md:items-start min-w-0 w-full whitespace-normal'>
+                    <div className="text-sm text-mauve-800 font-medium text-right md:text-left w-full break-all">
                         {client.phone_number || "No phone"}
                     </div>
-                    <div className="text-xs text-mauve-500 mt-0.5">
+                    <div className="text-xs text-mauve-500 mt-0.5 text-right md:text-left w-full break-all">
                         TIN: {client.tax_number || "N/A"}
                     </div>
-                </>
+                </div>
             )
         },
         {
             header: 'KYC Status',
-            className: 'pl-1 pr-4',
+            className: 'pl-1 sm:pl-5 pr-4',
             render: (client) => (
                 <>
-                    <div className='flex justify-end md:justify-start items-center gap-1'>
-                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
+                    <div className='flex justify-end md:justify-start items-center gap-0.5 w-full shrink-0'>
+                        <span className={`inline-flex items-center justify-center w-24 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase shrink-0 ${
                             client.kyc_status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
                             client.kyc_status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
                             'bg-red-100 text-red-700'
@@ -76,7 +76,7 @@ const Clients = () => {
                                     setSelectedClientForKyc(client);
                                     setIsKycModalOpen(true); 
                                 }}
-                                className='text-gray-600 text-lg'
+                                className='text-gray-600 text-lg hover:text-blue-600 transition-colors shrink-0'
                             >
                                 <IoIosSettings />
                             </button>
@@ -87,11 +87,11 @@ const Clients = () => {
         },
         {
             header: 'Risk level',
-            className: 'pl-1 pr-4',
+            className: 'pl-1 sm:pl-4 pr-4',
             render: (client) => (
                 <>
-                    <div className="flex justify-end md:justify-start items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${
+                    <div className="flex justify-end md:justify-start items-center gap-2 w-full shrink-0">
+                        <div className={`w-2 h-2 rounded-full shrink-0 ${
                             client.risk_level === 'HIGH' ? 'bg-red-500' :
                             client.risk_level === 'MEDIUM' ? 'bg-amber-500' :
                             'bg-emerald-500'
@@ -112,11 +112,13 @@ const Clients = () => {
         },
         {
             header: 'Accounts',
-            className: 'pl-1',
+            className: 'pl-1 sm:pl-4',
             render: (client) => (
-                <span className="text-sm font-medium text-mauve-600 bg-white border border-mauve-200 px-2 py-1 rounded-md">
-                    {client.accounts?.length || 0}
-                </span>
+                <div className='flex justify-end md:justify-start w-full shrink-0'>
+                    <span className="text-sm font-medium text-mauve-600 bg-white border border-mauve-200 px-2.5 py-0.5 rounded-md">
+                        {client.accounts?.length || 0}
+                    </span>
+                </div>
             )
         }
     ]

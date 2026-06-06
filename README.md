@@ -10,7 +10,7 @@ Vaulty is an advanced fullstack fintech platform designed to manage bank clients
 
 The project serves as a comprehensive financial analytics platform and enterprise-grade API, designed to handle high-volume transaction datasets generated via PySpark pipelines. It bridges the gap between heavy data processing and interactive user interfaces, focusing on secure financial operations, complex data filtering, and ironclad permission management.
  
-> ⚠️ **Disclaimer:** This is a personal fullstack portfolio project developed for educational purposes[cite: 1]. All financial records, client profiles, tax identification numbers (TIN), and transaction logs displayed within the platform are entirely fictional and generated programmatically for demonstration purposes.
+> ⚠️ **Disclaimer:** This is a personal fullstack portfolio project developed for educational purposes. All financial records, client profiles, tax identification numbers (TIN), and transaction logs displayed within the platform are entirely fictional and generated programmatically for demonstration purposes.
 
 ### Key Features
 * **Financial Management Dashboards:** Data-dense management views for reviewing bank client profiles, transaction histories, and currency balances (`USD`, `EUR`, `UAH`) formatted via `Intl.NumberFormat`. 

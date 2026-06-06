@@ -117,8 +117,9 @@ class DashboardStatsView(APIView):
             if latest_tx:
                 now = timezone.now()
                 
-                if latest_tx < now - timedelta(days=1):
-                    delta = now - latest_tx
+                if latest_tx.date() < now.date():
+                    days_difference = (now.date() - latest_tx.date()).days
+                    delta = timedelta(days=days_difference)
 
                     Transaction.objects.update(timestamp=F('timestamp') + delta)
         

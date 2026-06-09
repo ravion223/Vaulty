@@ -1,6 +1,7 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { FiUsers, FiDollarSign, FiActivity, FiAlertTriangle } from "react-icons/fi";
 import { useState, useEffect } from "react";
+import { GrMoney } from "react-icons/gr";
 import apiClient from "../api/client";
 
 const formatCurrency = (value, currencyCode) => {
@@ -110,7 +111,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-mauve-100 flex items-center gap-4 hover:-translate-y-1 transition">
           <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
-            <FiDollarSign size={24} />
+            <GrMoney size={24} />
           </div>
           <div>
             <p className="text-sm font-medium text-mauve-500">Total balance</p>

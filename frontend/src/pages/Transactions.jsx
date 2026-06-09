@@ -74,12 +74,13 @@ const Transactions = () => {
             header: 'Status',
             className: "pl-1 sm:pl-4 pr-4 md:text-center",
             render: (transaction) => (
-                <div className="flex justify-end md:justify-center w-full shrink-0">
-                    <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase shrink-0 ${
-                        transaction.status === "COMPLETED" ? 'bg-emerald-100 text-emerald-700' :
-                        transaction.status === "PROCESSING" ? 'bg-amber-100 text-amber-700' :
-                        'bg-red-100 text-red-700'
-                    }`}>
+                <div className="flex justify-end md:justify-center shrink-0">
+                    <span className='inline-flex justify-center items-center gap-2 w-28 px-2.5 py-1 rounded-full bg-mauve-600 text-mauve-50 text-[10px] font-bold tracking-wider uppercase shrink-0 shadow-sm border border-mauve-700/30'>
+                        <span className={`w-2 h-2 rounded-full shrink-0 ${
+                        transaction.status === "COMPLETED" ? 'bg-emerald-400' :
+                        transaction.status === "PROCESSING" ? 'bg-amber-400' :
+                        'bg-red-400'
+                    }`} />
                         {transaction.status}
                     </span>
                 </div>
@@ -107,10 +108,10 @@ const Transactions = () => {
                     <AccessGuard permission="flag_transaction">
                         <button
                             onClick={() => toggleFlagTransaction(transaction.id, transaction.is_flagged)}
-                            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 shrink-0 ${
+                            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all duration-200 cursor-pointer shrink-0 ${
                             transaction.is_flagged 
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 shadow-sm"
-                                : "bg-white text-mauve-500 border-mauve-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                                ? "bg-mauve-100 text-mauve-800 border-mauve-300 hover:bg-mauve-200 shadow-sm"
+                                : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
                             }`}
                         >
                             {transaction.is_flagged ? (
@@ -250,8 +251,8 @@ const Transactions = () => {
 
     return (
         <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border border-mauve-100 min-h-full">
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6 pb-4 border-b border-mauve-100 w-full">
-                <div className="flex items-center justify-between xl:justify-start gap-4 w-full xl:w-auto">
+            <div className="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 mb-6 w-full">
+                <div className="flex items-center justify-between lg:justify-start gap-4 w-full lg:w-auto shrink-0">
                     <h2 className="text-xl font-bold text-mauve-900 tracking-tight">
                         Bank transactions
                     </h2>
@@ -259,7 +260,7 @@ const Transactions = () => {
                         <AccessGuard permission="create_transaction">
                             <button
                                 onClick={() => setIsAddModalOpen(true)}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap shrink-0"
+                                className="bg-mauve-700 hover:bg-mauve-600 text-indigo-50 text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-xl font-semibold transition-all duration-300 shadow-sm whitespace-nowrap shrink-0 cursor-pointer"
                             >
                                 + New transaction
                             </button>
@@ -267,7 +268,7 @@ const Transactions = () => {
                     )}
                 </div>
                 
-                <div className="flex flex-col lg:flex-row gap-3 w-full justify-between items-stretch lg:items-center">
+                <div className="flex flex-col lg:grid-cols-2 xl:flex-row gap-4 w-full lg:flex-1 lg:justify-between items-stretch sm:items-center lg:pl-12 xl:pl-32">
                     <div className="relative w-full sm:w-72 shrink-0">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <FiSearch className="text-mauve-400" />
@@ -277,17 +278,17 @@ const Transactions = () => {
                             placeholder="Search by name, surname..."
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-mauve-400 bg-white"
+                            className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-xl text-xs text-mauve-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-mauve-400"
                         />
                     </div>
                     
-                    <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end shrink-0">
                         <div className="flex flex-1 sm:flex-none items-center gap-1.5 min-w-27.5">
                             <span className="text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider">Status:</span>
                             <select
                                 value={statusFilter}
                                 onChange={handleStatusChange}
-                                className="w-full bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
+                                className="w-full bg-white border border-mauve-200 text-mauve-700 text-xs font-semibold rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
                             >
                                 <option value="">All</option>
                                 <option value="COMPLETED">Completed</option>
@@ -298,8 +299,9 @@ const Transactions = () => {
                         
                         <button
                             onClick={toggleFlaggedFilter}
-                            className={`flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-300 ${
-                                filterFlagged ? "bg-red-50 text-red-700 border border-red-200"
+                            className={`flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors duration-300 cursor-pointer ${
+                                filterFlagged 
+                                ? "bg-mauve-700 text-indigo-50 border-mauve-700 shadow-sm"
                                 : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
                             }`}
                         >
@@ -311,7 +313,7 @@ const Transactions = () => {
                             <button
                                 onClick={handleExportCSV}
                                 disabled={loading || transactions.length === 0}
-                                className="flex items-center justify-center rounded-lg bg-white text-mauve-600 border border-mauve-200 hover:bg-emerald-600 hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 h-9.5 w-9.5"
+                                className="flex items-center justify-center rounded-xl bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 h-9.5 w-9.5 cursor-pointer"
                             >
                                 <FiDownload size={16} />
                             </button>

@@ -85,7 +85,7 @@ const Table = ({ columns, data, loading, page, hasNext, hasPrevious, onNext, onP
                     <button
                         onClick={onPrev}
                         disabled={!hasPrevious}
-                        className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-200 disabled:opacity-50 disabled:cursor-not-allowed transition duration-500"
+                        className="w-full sm:w-auto px-4 py-2 text-xs font-mono font-bold text-mauve-600 bg-white border border-mauve-200 rounded-xl hover:bg-mauve-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                     >
                         Previous
                     </button>
@@ -95,7 +95,7 @@ const Table = ({ columns, data, loading, page, hasNext, hasPrevious, onNext, onP
                     <button
                         onClick={onNext}
                         disabled={!hasNext}
-                        className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-200 disabled:opacity-50 disabled:cursor-not-allowed transition duration-500"
+                        className="w-full sm:w-auto px-4 py-2 text-xs font-mono font-bold text-mauve-600 bg-white border border-mauve-200 rounded-xl hover:bg-mauve-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                     >
                         Next
                     </button>

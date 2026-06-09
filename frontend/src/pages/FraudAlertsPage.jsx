@@ -3,6 +3,8 @@ import apiClient from "../api/client";
 import ResolveFraudModal from '../components/ResolveFraudModal';
 import { FiAlertTriangle, FiArrowRight, FiActivity, FiDollarSign } from 'react-icons/fi';
 import { HiShieldCheck } from "react-icons/hi";
+import { GrMoney } from "react-icons/gr";
+
 
 const FraudAlertsPage = () => {
     const [alerts, setAlerts] = useState([]);
@@ -65,21 +67,21 @@ const FraudAlertsPage = () => {
         if (count === 0) {
             return {
                 text: 'LOW',
-                textColor: 'text-emerald-600',
-                bgColor: 'bg-emerald-50'
+                textColor: 'text-emerald-500',
+                bgColor: 'bg-emerald-50/60'
             }
         }
         if (count <= 5) {
             return {
                 text: 'MEDIUM',
-                textColor: 'text-amber-600',
-                bgColor: 'bg-amber-50'
+                textColor: 'text-amber-500',
+                bgColor: 'bg-amber-50/60'
             }
         }
         return {
             text: 'CRITICAL',
-            textColor: 'text-red-600',
-            bgColor: 'bg-red-50'
+            textColor: 'text-red-500',
+            bgColor: 'bg-red-50/60'
         }
     }
 
@@ -97,15 +99,15 @@ const FraudAlertsPage = () => {
     };
 
     return (
-        <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border-mauve-100 min-h-full">
+        <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border border-mauve-100 min-h-full">
             {/* <div className="flex justify-between items-center"> */}
-            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-mauve-100'>
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-mauve-100'>
                 <div className='space-y-1'>
-                    <h2 className="flex items-center gap-2 text-xl font-bold text-mauve-900">
+                    <h2 className="flex items-center gap-2 text-xl font-bold text-mauve-900 tracking-tight">
                         <FiAlertTriangle className="text-red-500 animate-pulse" />
                         Fraud Alerts Queue
                     </h2>
-                    <p className='text-sm font-mono mt-1'>
+                    <p className='text-xs text-mauve-400 font-mono font-medium tracking-wide'>
                         Real-time high-risk transactions requiring manual override or resolution
                     </p>                    
                 </div>
@@ -117,7 +119,7 @@ const FraudAlertsPage = () => {
                             setCurrencyFilter(e.target.value);
                             setPage(1);
                         }}
-                        className='w-full md:w-auto bg-white border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 shadow-sm font-mono outline-none cursor-pointer transition duration-200'
+                        className='w-full sm:w-auto bg-white border border-mauve-200 text-mauve-700 text-xs font-semibold rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent block p-2.5 shadow-sm font-mono outline-none cursor-pointer transition-all duration-200'
                     >
                         <option value="USD">USD - US Dollar</option>
                         <option value="EUR">EUR - Euro</option>
@@ -128,30 +130,30 @@ const FraudAlertsPage = () => {
 
             {/* METRICS PANEL */}
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full'>
-                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4'>
-                    <div className='p-3 bg-red-50 text-red-600 rounded-lg'>
+                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-100 flex items-center gap-4'>
+                    <div className='p-3 bg-red-50 text-red-500 rounded-xl shrink-0'>
                         <FiActivity size={24} className='animate-pulse' />
                     </div>
                     <div className='min-w-0 flex-1'>
-                        <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider truncate'>
+                        <p className='text-[10px] font-mono font-bold text-mauve-400 uppercase tracking-wider truncate'>
                             Active Threats
                         </p>
-                        <h4 className='text-xl sm:text-2xl font-bold font-mono text-mauve-900 mt-1 truncate'>
+                        <h4 className='text-xl sm:text-2xl font-bold font-mono text-mauve-900 mt-0.5 truncate'>
                             {loading ? '...' : activeAlertsCount}
                         </h4>
                     </div>
                 </div>
 
-                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4'>
-                    <div className='p-3 bg-amber-50 text-amber-600 rounded-lg shrink-0'>
-                        <FiDollarSign size={24} />
+                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-100 flex items-center gap-4'>
+                    <div className='p-3 bg-amber-50 text-amber-500 rounded-xl shrink-0'>
+                        <GrMoney size={24}/>
                     </div>
                     <div className='min-w-0 flex-1'>
-                        <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider truncate'>
+                        <p className='text-[10px] font-mono font-bold text-mauve-400 uppercase tracking-widest truncate'>
                             Funds Under Exposure
                         </p>
                         <h4 
-                            className='text-xl sm:text-2xl font-bold font-mono text-mauve-900 mt-1 truncate tracking-tight'
+                            className='text-xl sm:text-2xl font-bold font-mono text-mauve-900 mt-0.5 truncate tracking-tight'
                             title={totalRiskAmount}
                         >
                             {loading ? '...' : `${formatRiskAmount(totalRiskAmount)}`}
@@ -159,15 +161,15 @@ const FraudAlertsPage = () => {
                     </div>
                 </div>
 
-                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-200 flex items-center gap-4 sm:col-span-2 lg:col-span-1'>
-                    <div className={`p-3 rounded-lg shrink-0 ${priority.bgColor} ${priority.textColor}`}>
+                <div className='w-full overflow-hidden min-w-0 bg-white p-5 rounded-xl shadow-sm border border-mauve-100 flex items-center gap-4 sm:col-span-2 lg:col-span-1'>
+                    <div className={`p-3 rounded-xl shrink-0 ${priority.bgColor} ${priority.textColor}`}>
                         <HiShieldCheck size={24} />
                     </div>
                     <div className='min-w-0 flex-1'>
-                        <p className='text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider truncate'>
+                        <p className='text-[10px] font-mono font-bold text-mauve-400 uppercase tracking-widest truncate'>
                             Queue Priority
                         </p>
-                        <h4 className={`text-xl sm:text-2xl font-bold font-mono ${priority.textColor} mt-1 truncate`}>
+                        <h4 className={`text-xl sm:text-2xl font-bold font-mono ${priority.textColor} mt-0.5 truncate`}>
                             {loading ? '...' : priority.text}
                         </h4>
                     </div>
@@ -181,21 +183,21 @@ const FraudAlertsPage = () => {
                         {skeletonCards.map((_, index) => (
                             <div 
                                 key={index} 
-                                className='bg-white rounded-xl border border-mauve-200 shadow-sm border-l-4 border-l-mauve-200 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-pulse'
+                                className='bg-white rounded-xl border border-mauve-100 shadow-sm border-l-4 border-l-mauve-200 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-pulse'
                             >
                                 {/* LEFT SIDE SKELETON */}
                                 <div className='space-y-3 w-full md:w-1/2'>
 
                                     <div className='flex items-center gap-2'>
                                         <div className='w-2 h-2 rounded-full bg-mauve-200'></div>
-                                        <div className='h-5 w-20 bg-mauve-100 rounded'></div>
-                                        <div className='h-4 w-32 bg-mauve-50 rounded'></div>
+                                        <div className='h-5 w-20 bg-mauve-100 rounded-lg'></div>
+                                        <div className='h-4 w-32 bg-mauve-50 rounded-lg'></div>
                                     </div>
                                     
                                     <div className='flex items-center gap-2 pt-1'>
-                                        <div className='h-5 w-24 bg-mauve-100 rounded'></div>
-                                        <div className='h-3 w-4 bg-mauve-100 rounded'></div>
-                                        <div className='h-5 w-24 bg-mauve-100 rounded'></div>
+                                        <div className='h-5 w-24 bg-mauve-100 rounded-lg'></div>
+                                        <div className='h-3 w-4 bg-mauve-100 rounded-lg'></div>
+                                        <div className='h-5 w-24 bg-mauve-100 rounded-lg'></div>
                                     </div>
                                 </div>
 
@@ -203,19 +205,19 @@ const FraudAlertsPage = () => {
                                 <div className='flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-mauve-50 w-full md:w-auto'>
                                     <div className='flex flex-col items-start md:items-end space-y-2'>
                                         <div className='h-3 w-20 bg-mauve-100 rounded'></div>
-                                        <div className='h-6 w-28 bg-mauve-200 rounded'></div>
+                                        <div className='h-6 w-28 bg-mauve-200 rounded-lg'></div>
                                         <div className='h-2 w-24 bg-mauve-50 rounded'></div>
                                     </div>
                                     
                                     
-                                    <div className='h-9 w-32 bg-mauve-100 rounded-lg md:ml-4'></div>
+                                    <div className='h-9 w-32 bg-mauve-100 rounded-xl md:ml-4'></div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : alerts.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-xl border border-mauve-200 shadow-sm">
-                        <div className="bg-emerald-50 p-4 rounded-full mb-4 text-emerald-600">
+                    <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-xl border border-mauve-100 shadow-sm">
+                        <div className="bg-emerald-50 p-4 rounded-full mb-4 text-emerald-500">
                             <HiShieldCheck size={36} />
                         </div>
                         <h3 className="text-lg font-bold font-mono text-mauve-900 mb-1">Queue is Clear</h3>
@@ -228,40 +230,41 @@ const FraudAlertsPage = () => {
                         {alerts.map((alert, index) => (
                             <div
                                 key={alert.transaction_id || index}
-                                className='bg-white rounded-xl border border-mauve-200
-                                shadow-sm hover:shadow-md transition duration-300 border-l-4
+                                className='bg-white rounded-xl border border-mauve-100
+                                shadow-sm hover:shadow-md transition-all duration-300 border-l-4
                                 border-l-red-500 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4'
                             >
                                 {/* LEFT SIDE */}
-                                <div className='space-y-1'>
-                                    <div className='flex items-center gap-2'>
-                                        <span className='inline-block w-2 h-2 rounded-full bg-red-500 animate-ping'></span>
-                                        <span className='text-xs font-mono font-bold text-red-600 uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded'>
+                                <div className='space-y-1.5'>
+                                    <div className='flex items-center gap-2 flex-wrap sm:flex-nowrap'>
+                                        
+                                        <span className='inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-mauve-600 text-mauve-50 text-[10px] font-bold tracking-wider font-mono uppercase shrink-0 shadow-sm border border-mauve-700/30'>
+                                            <span className='w-1.5 h-1.5 rounded-full bg-red-400 animate-ping shrink-0'></span>
                                             {alert.status || 'SUSPICIOUS'}
                                         </span>
-                                        <span>
-                                            ID: {alert.transaction_id}
+                                        <span className="font-mono text-xs font-semibold text-mauve-400">
+                                            ID: <span className="text-mauve-800">{alert.transaction_id.slice(0, 8)}...</span>
                                         </span>
                                     </div>
 
-                                    <div className='flex items-center gap-2 font-mono text-sm text-mauve-800 pt-1'>
-                                        <span className='bg-mauve-100 px-2 py-0.5 rounded text-xs'>
+                                    <div className='flex items-center gap-2 font-mono text-xs text-mauve-800 pt-1'>
+                                        <span className='bg-mauve-50 border border-mauve-100 text-mauve-600 font-semibold px-2 py-0.5 rounded-md'>
                                             {alert.account_from}
                                         </span>
-                                        <FiArrowRight className='text-mauve-400'/>
-                                        <span className='bg-mauve-100 px-2 py-0.5 rounded text-xs'>
+                                        <FiArrowRight className='text-mauve-400 shrink-0'/>
+                                        <span className='bg-mauve-50 border border-mauve-100 text-mauve-600 font-semibold px-2 py-0.5 rounded-md'>
                                             {alert.account_to}
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* RIGHT SIDE */}
-                                <div className='flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-mauve-100'>
+                                <div className='flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-mauve-100 w-full md:w-auto'>
                                     <div className='text-left md:text-right font-mono'>
-                                        <p className='text-xs text-mauve-400 font-bold uppercase'>
+                                        <p className='text-[10px] text-mauve-400 font-bold uppercase tracking-wider'>
                                             Impact Amount
                                         </p>
-                                        <p className='text-lg font-bold text-red-600 mt-0.5'>
+                                        <p className='text-lg font-bold text-red-500 mt-0.5'>
                                             {alert.currency === 'USD' ? '$' : alert.currency === 'EUR' ? '€' : '₴'}
                                             {Number(alert.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                         </p>
@@ -275,9 +278,9 @@ const FraudAlertsPage = () => {
                                             setSelectedAlert(alert);
                                             setIsModalOpen(true);
                                         }}
-                                        className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50
-                                        hover:bg-emerald-600 hover:text-white border-emerald-200
-                                        px-4 py-2 rounded-lg transition duration-300 shadow-sm"
+                                        className="text-xs font-mono font-bold text-indigo-50 bg-mauve-700
+                                        hover:bg-mauve-600 border border-transparent cursor-pointer
+                                        px-4 py-2 rounded-xl transition-all duration-300 shadow-sm shrink-0"
                                     >
                                         Dismiss Alert
                                     </button>
@@ -290,11 +293,11 @@ const FraudAlertsPage = () => {
 
             {/* PAGINATION FOOTER */}
             {!loading && alerts.length > 0 && (
-                <div className='flex items-center justify-between border-t border-mauve-200 pt-4 mt-6'>
+                <div className='flex flex-col sm:flex-row items-center justify-between border-t border-mauve-100 pt-4 mt-6'>
                     <button
                         onClick={() => setPage((prev) => Math.max(1, prev - 1))}
                         disabled={!hasPrevious}
-                        className='px-4 py-2 text-xs font-mono font-bold text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-100 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200'
+                        className='w-full sm:w-auto px-4 py-2 text-xs font-mono font-bold text-mauve-600 bg-white border border-mauve-200 rounded-xl hover:bg-mauve-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer'
                     >
                         Previous
                     </button>
@@ -304,7 +307,7 @@ const FraudAlertsPage = () => {
                     <button
                         onClick={() => setPage((prev) => Math.max(1, prev + 1))}
                         disabled={!hasNext}
-                        className='px-4 py-2 text-xs font-mono font-bold text-mauve-700 bg-white border border-mauve-200 rounded-lg hover:bg-mauve-100 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200'
+                        className='w-full sm:w-auto px-4 py-2 text-xs font-mono font-bold text-mauve-600 bg-white border border-mauve-200 rounded-xl hover:bg-mauve-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer'
                     >
                         Next
                     </button>

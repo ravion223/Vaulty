@@ -40,14 +40,14 @@ const Accounts = () => {
             header: 'Account №',
             className: 'pl-1 sm:pl-4',
             render: (account) => (
-                <>
+                <span className="font-mono text-xs tracking-wider text-mauve-600">
                     •••• {account.account_number.slice(-4)}
-                </>
+                </span>
             )
         },
         {
             header: 'Currency',
-            className: 'pl-1 sm:pl-4',
+            className: 'pl-1 sm:pl-4 font-mono font-semibold text-xs text-mauve-500',
             render: (account) => (
                 <>
                     {account.currency}
@@ -68,12 +68,13 @@ const Accounts = () => {
             className: 'pl-1 sm:text-center',
             render: (account) => (
                 <>
-                    <div className="pl-1 text-end md:text-center">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            account.status === "FROZEN" ?
-                            'bg-cyan-100 text-cyan-700' :
-                            'bg-emerald-100 text-emerald-700'
-                        }`}>
+                    <div className="pl-1 flex justify-end md:justify-center">
+                        <span className="inline-flex items-center gap-2 justify-center w-28 px-2.5 py-1 rounded-full bg-mauve-600 text-mauve-50 text-[10px] font-bold tracking-wider uppercase shrink-0 shadow-sm border border-mauve-700/30">
+                            <span className={`w-2 h-2 rounded-full shrink-0 ${
+                                account.status === "FROZEN" ?
+                                'bg-cyan-400' :
+                                'bg-emerald-400'
+                            }`} />
                             {account.status}
                         </span>
                     </div>
@@ -82,7 +83,7 @@ const Accounts = () => {
         },
         {
             header: 'Creation date',
-            className: 'pl-1 sm:pl-3 text-start',
+            className: 'pl-1 sm:pl-3 text-start text-xs text-mauve-500',
             render: (account) => (
                 <>
                     {new Date(account.created_at).toLocaleDateString('uk-UA')}
@@ -97,10 +98,10 @@ const Accounts = () => {
                     <AccessGuard permission="freeze_account">
                         <button
                             onClick={() => toggleAccountStatus(account.id, account.status)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 cursor-pointer border ${
                                 account.status === "ACTIVE" 
-                                ? "bg-white text-mauve-400 border-mauve-200 hover:bg-cyan-50 hover:text-cyan-600 border hover:border-cyan-200" 
-                                : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"
+                                ? "bg-white text-mauve-600 border-mauve-200 hover:bg-mauve-50 hover:text-mauve-700" 
+                                : "bg-mauve-100 text-mauve-800 hover:bg-mauve-200 border border-mauve-300"
                             }`}
                         >
                             { account.status === "ACTIVE" ? "Freeze" : "Activate" }
@@ -218,23 +219,23 @@ const Accounts = () => {
 
     return (
         <div className="p-4 md:p-6 bg-white rounded-xl shadow-sm border border-mauve-100 min-h-full">
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6 pb-4 border-b border-mauve-100 w-full">
-                <div className="flex items-center justify-between xl:justify-start gap-4 w-full xl:w-auto">
+            <div className="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 mb-6 w-full">
+                <div className="flex items-center justify-between lg:justify-start gap-4 w-full lg:w-auto shrink-0">
                     <h2 className="text-xl font-bold text-mauve-900 tracking-tight">
                         Bank accounts
                     </h2>
                     {!loading && accounts.length !== 0 && (
                         <button
                             onClick={() => setIsAddModalOpen(true)}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-semibold transition-colors duration-300 shadow-sm whitespace-nowrap"
+                            className="bg-mauve-700 hover:bg-mauve-600 text-indigo-50 text-sm px-4 py-2 rounded-xl font-semibold transition-all duration-300 shadow-sm whitespace-nowrap cursor-pointer"
                         >
                             + Open Account
                         </button>
                     )}
                 </div>
                 
-                <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto items-stretch sm:items-center">
-                    <div className="relative w-full sm:w-72">
+                <div className="flex flex-col lg:grid-cols-2 xl:flex-row gap-4 w-full lg:flex-1 lg:justify-between items-stretch sm:items-center lg:pl-12 xl:pl-32">
+                    <div className="relative w-full sm:w-72 shrink-0">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <FiSearch className="text-mauve-400" />
                         </div>
@@ -243,17 +244,17 @@ const Accounts = () => {
                             placeholder="Search by name, surname..."
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-lg text-sm text-mauve-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-mauve-400 bg-white"
+                            className="w-full pl-10 pr-4 py-2 border border-mauve-300 rounded-xl text-xs text-mauve-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-mauve-400"
                         />
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row items-left gap-3 w-full sm:w-auto">
+                    <div className="flex items-center justify-end gap-3 w-full sm:w-auto shrink-0">
                         <div className="flex flex-1 sm:flex-none items-center gap-2 min-w-120px">
                             <span className="text-xs font-mono font-bold text-mauve-400 uppercase tracking-wider">Currency:</span>
                             <select
                                 value={currencyFilter}
                                 onChange={handleCurrencyChange}
-                                className="w-full min-w-30 bg-white border border-mauve-200 text-mauve-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
+                                className="w-full bg-white border border-mauve-200 text-mauve-700 text-xs font-semibold rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent p-2 outline-none cursor-pointer hover:bg-mauve-50 transition duration-300"
                             >
                                 <option value="">All</option>
                                 <option value="USD">USD</option>
@@ -264,14 +265,14 @@ const Accounts = () => {
                         
                         <button
                             onClick={toggleFrozenFilter}
-                            className={`flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-300 ${
+                            className={`flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition-all duration-300 cursor-pointer ${
                                 filterFrozen 
-                                    ? "bg-cyan-100 text-cyan-700 border-cyan-200"
+                                    ? "bg-mauve-700 text-indigo-50 border-mauve-700 shadow-sm"
                                     : "bg-white text-mauve-600 border border-mauve-200 hover:bg-mauve-50"
                             }`}
                         >
                             <FiFilter size={16} />
-                            <span className="whitespace-nowrap">{filterFrozen ? 'Show all' : 'Only frozen'}</span>
+                            <span className="text-xs font-semibold whitespace-nowrap">{filterFrozen ? 'Show all' : 'Only frozen'}</span>
                         </button>
                     </div>
                 </div>

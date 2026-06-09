@@ -60,31 +60,31 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
 
     return (
         <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm'>
-            <div className='py-4 px-6 bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden'>
-                <div className='flex items-center justify-between'>
-                    <h2>Add New Client</h2>
-                    <button onClick={onClose} className='pb-3 text-gray-400 hover:text-red-500 transition-colors'>
+            <div className='bg-white rounded-2xl w-full max-w-md shadow-2xl border border-mauve-100/50 overflow-hidden transition-all'>
+                <div className='px-6 py-4 border-b border-mauve-100 flex justify-between items-center bg-white'>
+                    <h2 className='text-lg font-bold text-mauve-900 tracking-tight'>Add New Client</h2>
+                    <button onClick={onClose} className='pb-3 text-mauve-400 hover:text-red-500 transition-colors'>
                         <FiX size={20} />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">First Name</label>
                             <input
                                 {...register("first_name")}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                className="w-full px-3 text-sm py-2 border border-mauve-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-mauve-400"
                                 placeholder='John'
                             />
                             {errors.first_name && <p className="text-red-500 text-xs mt-1">{errors.first_name.message}</p>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">Last Name</label>
                             <input
                                 {...register("last_name")}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                className="w-full px-3 py-2 text-sm border border-mauve-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-mauve-400"
                                 placeholder='Doe'
                             />
                             {errors.last_name && <p className="text-red-500 text-xs mt-1">{errors.last_name.message}</p>}
@@ -92,11 +92,11 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">Email</label>
                         <input 
                             {...register("email")}
                             type="email"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            className="w-full px-3 py-2 text-sm border border-mauve-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-mauve-400"
                             placeholder='john.doe@example.com'
                         />
                         {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -104,19 +104,19 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone number</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">Phone number</label>
                         <input 
                             {...register("phone_number")}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            className="w-full px-3 py-2 text-sm border border-mauve-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-mauve-400"
                             placeholder='+1 234 567 8900'
                         />
                         {errors.phone_number && <p className="text-red-500 text-xs mt-1">{errors.phone_number.message}</p>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Tax number</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">Tax number</label>
                         <input 
                             {...register("tax_number")}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            className="w-full px-3 py-2 text-sm border border-mauve-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-mauve-400"
                             placeholder='123456789'
                         />
                         {errors.tax_number && <p className="text-red-500 text-xs mt-1">{errors.tax_number.message}</p>}
@@ -125,10 +125,10 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">KYC status</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">KYC status</label>
                         <select 
                             {...register("kyc_status")}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                            className="w-full px-3 py-2 text-sm border border-mauve-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white "
                         >
                             <option value="PENDING">Pending</option>
                             <option value="APPROVED">Approved</option>
@@ -137,10 +137,10 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
                         {errors.kyc_status && <p className="text-red-500 text-xs mt-1">{errors.kyc_status.message}</p>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Risk level</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">Risk level</label>
                         <select 
                             {...register("risk_level")}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            className="w-full px-3 py-2 text-sm border border-mauve-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                             <option value="LOW">Low</option>
                             <option value="MEDIUM">Medium</option>
@@ -150,11 +150,11 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
                         </div>
                     </div>
 
-                    <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
+                    <div className="pt-4 flex justify-end gap-3 border-t border-mauve-100 mt-6">
                         <button
                             type='button'
                             onClick={onClose}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-mauve-700 bg-mauve-50 hover:bg-mauve-100 rounded-xl transition-colors"
                         >
                             Cancel
                         </button>
@@ -162,7 +162,7 @@ const AddClientModal = ({ isOpen, onClose, onAdd }) => {
                         <button
                             type='submit'
                             disabled={isSubmitting}
-                            className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-white bg-mauve-700 hover:bg-mauve-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
                             {isSubmitting ? "Creating..." : "Create Client"}
                         </button>

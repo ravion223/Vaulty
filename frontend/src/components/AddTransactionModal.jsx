@@ -44,35 +44,52 @@ const AccountSearchInput = ({ label, selectedAccount, onSelect, onClear, error }
 
     return (
         <div className='relative'>
-            <label>{label}</label>
+            <label className='block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1'>{label}</label>
 
             {selectedAccount ? (
-                <div>
-                    <span>{selectedAccount.client_name} (•••• {selectedAccount.account_number?.slice(-4)}) - {selectedAccount.currency}</span>
+                <div className='flex justify-between items-center w-full px-4 py-2.5 border border-indigo-300 bg-indigo-50/40 rounded-xl text-mauve-900 font-semibold shadow-sm animate-fadeIn'>
+                    <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-sm truncate">{selectedAccount.client_name}</span>
+                        <div className="text-[10px] text-indigo-600 font-mono mt-0.5 flex gap-2 items-center flex-wrap">
+                            <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wide">
+                                {selectedAccount.currency}
+                            </span>
+                            <span className="tracking-wider">•••• {selectedAccount.account_number?.slice(-4)}</span>
+                            {selectedAccount.balance !== undefined && (
+                                <>
+                                    <span className="text-indigo-300">•</span>
+                                    <span className="text-mauve-500 font-sans">Bal: {Number(selectedAccount.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                </>
+                            )}
+                        </div>
+                    </div>
                     <button
                         type='button'
                         onClick={onClear}
+                        className='text-indigo-400 hover:text-red-500 p-1 rounded-md hover:bg-indigo-100/60 transition-all cursor-pointer shrink-0 ml-2'
                     >
-                        <FiX size={18} />
+                        <FiX size={16} />
                     </button>
                 </div>
             ) : (
                 <div className="relative">
                     <div className='absolute inset-y-0 left-0 pl-3 flex items-center'>
-                        <FiSearch className='text-gray-400' />
+                        <FiSearch className='text-mauve-400' />
                     </div>
                     <input 
                         type='text'
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
-                        placeholder="Search by client or account №..."
+                        className="w-full pl-10 pr-4 py-2 border border-mauve-200 rounded-xl text-sm text-mauve-800 bg-mauve-50/10 placeholder:text-mauve-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        placeholder="Search by client name or account №..."
                         autoComplete="off"
                     />
                     {isOpen && searchQuery.trim() !== "" && (
-                        <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                        <ul className="absolute z-50 w-full mt-1.5 bg-white border border-mauve-200 rounded-xl shadow-xl max-h-48 overflow-y-auto divide-y divide-mauve-50">
                             {isSearching ? (
-                                <li className="px-4 py-3 text-sm text-gray-500 text-center">Searching...</li>
+                                <li className="px-4 py-3 text-xs font-mono font-medium text-mauve-400 text-center animate-pulse">
+                                    Searching...
+                                </li>
                             ) : results.length > 0 ? (
                                 results.map(acc => (
                                     <li
@@ -82,19 +99,25 @@ const AccountSearchInput = ({ label, selectedAccount, onSelect, onClear, error }
                                             setSearchQuery("");
                                             setIsOpen(false);
                                         }}
-                                        className="px-4 py-2 hover:bg-emerald-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors"
+                                        className="px-4 py-2.5 hover:bg-mauve-50 cursor-pointer transition-colors duration-150"
                                     >
-                                        <div className="font-medium text-gray-900">
+                                        <div className="font-semibold text-sm text-mauve-900">
                                             {acc.client_name}
                                         </div>
-                                        <div className="text-xs text-gray-500">
-                                            Acc: {acc.account_number} • {acc.currency} • Bal: {acc.balance}
+                                        <div className="text-[10px] text-mauve-400 font-mono flex gap-2 mt-0.5 items-center">
+                                            <span className="text-mauve-700 font-bold">{acc.currency}</span>
+                                            <span>•</span>
+                                            <span>№ {acc.account_number}</span>
+                                            <span>•</span>
+                                            <span className="text-mauve-500 font-sans font-medium">
+                                                Bal: {Number(acc.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                            </span>
                                         </div>
                                     </li>
-                                ))
+                                    ))
                             ) : (
-                                <li className="px-4 py-3 text-sm text-gray-500 text-center">
-                                    No accounts found
+                                <li className="px-4 py-3 text-xs font-mono text-mauve-400 text-center">
+                                    No records found
                                 </li>
                             )}
                         </ul>
@@ -152,10 +175,10 @@ const AddTransactionModal = ({ isOpen, onClose, onAdd }) => {
 
     return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-visible">
-                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-                    <h2 >New Transfer</h2>
-                    <button onClick={handleClose} className="pb-3 text-gray-400 hover:text-red-600 transition-colors">
+            <div className="px-6 py-4 bg-white rounded-2xl w-full max-w-md shadow-2xl border border-mauve-100/50 overflow-hidden transition-all">
+                <div className="border-b border-mauve-100 flex justify-between items-center bg-white">
+                    <h2 className='text-lg font-bold text-mauve-900 tracking-tight'>New Transfer</h2>
+                    <button onClick={handleClose} className="pb-3 text-mauve-400 hover:text-red-600 transition-colors">
                         <FiX size={20} />
                     </button>
                 </div>
@@ -195,27 +218,29 @@ const AddTransactionModal = ({ isOpen, onClose, onAdd }) => {
                     />
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-mauve-500 font-mono mb-1.5 mt-1">Amount</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span className="text-gray-500 font-medium">$</span>
+                                <span className="text-mauve-500 font-medium">
+                                    {senderAcc?.currency === "USD" ? "$" : senderAcc?.currency === "EUR" ? "€" : senderAcc?.currency === "UAH" ? "₴" : '$'}
+                                </span>
                             </div>
                             <input 
                                 type="number" 
                                 step="0.01"
                                 {...register("amount")}
-                                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                                className="w-full pl-8 pr-4 py-2 border border-mauve-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                                 placeholder="0.00"
                             />
                         </div>
                         {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount.message}</p>}
                     </div>
 
-                    <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
-                        <button type="button" onClick={handleClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+                    <div className="pt-4 flex justify-end gap-3 border-t border-mauve-100 mt-6">
+                        <button type="button" onClick={handleClose} className="px-4 py-2 text-sm font-medium text-mauve-700 bg-,auve-50 hover:bg-mauve-100 rounded-xl transition-all">
                             Cancel
                         </button>
-                        <button type="submit" disabled={isSubmitting} className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 transition-colors">
+                        <button type="submit" disabled={isSubmitting} className="px-4 py-2 text-sm font-medium text-white bg-mauve-700 hover:bg-mauve-600 rounded-xl disabled:opacity-50 transition-all">
                             {isSubmitting ? 'Processing...' : 'Transfer Money'}
                         </button>
                     </div>

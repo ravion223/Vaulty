@@ -80,7 +80,7 @@ const Sidebar = () => {
                         Operations
                     </p>
                     <nav className="flex flex-col gap-1">
-                        <AccessGuard permission="view_transactions">
+                        <AccessGuard permission="view_clients">
                             <NavLink to="/clients" className={navLinkClass}>
                                 <FiUsers size={18} className="shrink-0" />
                                 <span className={isOpen ? "inline" : "hidden md:inline"}>

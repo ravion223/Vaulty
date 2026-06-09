@@ -8,7 +8,6 @@ import EditKycModal from '../components/EditKycModal';
 import Table from '../components/Table';
 import AccessGuard from '../components/AccessGuard';
 
-// add pagination
 const Clients = () => {
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);

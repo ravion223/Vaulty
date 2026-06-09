@@ -11,8 +11,8 @@ const BarChartSkeleton = () => (
         <div className="h-80 w-full flex flex-col justify-between gap-4">
             {[...Array(6)].map((_, i) => (
                 <div key={i} className="flex items-center gap-4">
-                    <div className="h-3 bg-mauve-100 rounded w-12 shrink-0"></div> {/* Текст осі Y */}
-                    <div className="h-5 bg-mauve-200/70 rounded-r flex-1" style={{ maxWidth: `${90 - i * 12}%` }}></div> {/* Стовпчик */}
+                    <div className="h-3 bg-mauve-100 rounded w-12 shrink-0"></div> {/* Y Axis text */}
+                    <div className="h-5 bg-mauve-200/70 rounded-r flex-1" style={{ maxWidth: `${90 - i * 12}%` }}></div> {/* Column */}
                 </div>
             ))}
         </div>

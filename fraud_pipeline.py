@@ -31,6 +31,8 @@ def run_pipeline():
 
     logger.info("Reading new transactions from /incoming...")
     df = spark.read.csv(input_path, header=True, inferSchema=True)
+    total_rows = df.count()
+    logger.info(f"Successfully loaded {total_rows:,} transactions for analysis")
 
     logger.info("Analysis started")
     suspicious_df = df.filter((F.col("amount") > 50000) | (F.col("is_flagged") == True))

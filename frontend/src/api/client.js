@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'https://vaulty-backend.onrender.com/api/',
+    baseURL: import.meta.env.DEV
+    ? 'http://127.0.0.1:8000/api/'
+    : 'https://vaulty-backend.onrender.com/api/'
 });
 
 
